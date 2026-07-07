@@ -15,12 +15,14 @@ import workJson from '../content/work.json';
 import podcastsJson from '../content/podcasts.json';
 
 export type Talk = {
-  type: 'Talk' | 'Workshop' | 'Podcast';
+  type: 'Talk' | 'Workshop' | 'Podcast' | 'Panel';
   title: string;
   venue: string;
   date: string;
   description: string;
   upcoming?: boolean;
+  slug?: string;
+  link?: string;
 };
 
 export type Principle = {
@@ -46,12 +48,14 @@ export type BlogPost = {
 };
 
 export type PodcastEpisode = {
-  number: string;
   title: string;
   show: string;
   date: string;
-  duration: string;
   description: string;
+  number?: string;
+  duration?: string;
+  slug?: string;
+  link?: string;
 };
 
 export type Profile = {

@@ -6,7 +6,8 @@ import { TALKS, type Talk } from '../../data/content';
 const typeStyles: Record<Talk['type'], string> = {
   Talk: 'text-[var(--accent)]',
   Workshop: 'text-[var(--ink)]',
-  Podcast: 'text-[var(--ink-soft)]'
+  Podcast: 'text-[var(--ink-soft)]',
+  Panel: 'text-[var(--ink)]'
 };
 export function Speaking({ onBook }: {onBook: () => void;}) {
   return (
@@ -44,7 +45,16 @@ export function Speaking({ onBook }: {onBook: () => void;}) {
                 </div>
                 <div className="md:col-span-7">
                   <h3 className="font-display text-xl md:text-2xl font-light text-[var(--ink)] leading-snug">
-                    {talk.title}
+                    {talk.link ?
+                    <a
+                      href={talk.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-[var(--accent)] transition-colors">
+                        {talk.title}
+                      </a> :
+                    talk.title
+                    }
                   </h3>
                   <p className="mt-2 text-sm text-[var(--ink-soft)]">
                     {talk.description}
