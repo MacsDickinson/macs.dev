@@ -1,0 +1,26 @@
+[
+  {
+    "period": "2023 — Present",
+    "role": "Engineering Director",
+    "company": "LHV Bank",
+    "description": "Leading engineering across a growing UK bank, scaling high-performing teams and embedding AI safely within a heavily regulated environment."
+  },
+  {
+    "period": "2019 — 2023",
+    "role": "Head of Engineering",
+    "company": "Sky Betting & Gaming",
+    "description": "Scaled platform teams and led org design work, focusing on flow, developer experience and sustainable delivery at scale."
+  },
+  {
+    "period": "2015 — 2019",
+    "role": "Engineering Lead",
+    "company": "PokerStars",
+    "description": "Built and led teams shipping high-throughput, high-availability systems for a global real-money gaming platform."
+  },
+  {
+    "period": "2009 — 2015",
+    "role": "Software Engineer",
+    "company": "Ticket Arena",
+    "description": "Where it started — building ticketing and events platforms, and learning to talk about software in public for the first time."
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "type": "Talk",
+    "title": "Leading Through the Noise: Making AI Stick in Engineering Teams",
+    "venue": "Wrk Digital: Leadership",
+    "date": "Mar 2026",
+    "upcoming": true,
+    "description": "AI is evolving faster than engineering organisations can comfortably track, leaving leaders to cut through constant noise and hype. This talk focuses on how engineering leaders can drive real AI adoption through culture, experimentation and clear decision-making."
+  },
+  {
+    "type": "Workshop",
+    "title": "Nimble Scaling: LHV Bank accelerates value flow through Team Topologies",
+    "venue": "Conflux Case Study",
+    "date": "Dec 2025",
+    "description": "Hands-on workshops on restructuring engineering organisations for flow, alignment and sustainable delivery."
+  },
+  {
+    "type": "Talk",
+    "title": "AI, Data & Automation: Redefining the Customer Experience",
+    "venue": "Open Banking Expo 2025",
+    "date": "Oct 2025",
+    "description": "Session on how AI, data and automation are transforming customer experience in financial services, representing LHV Bank at Open Banking Expo 2025."
+  },
+  {
+    "type": "Podcast",
+    "title": "What Regulated Engineering Teaches You About Trust",
+    "venue": "The Engineering Room",
+    "date": "Aug 2025",
+    "description": "A conversation on building software where the cost of being wrong is measured in more than downtime, and why constraints can make better engineers."
+  }
+]

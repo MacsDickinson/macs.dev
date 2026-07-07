@@ -6,6 +6,9 @@ import { NavNode, type NavNodeData } from '../NavNode';
 type HeroProps = {
   onNavigate: (target: string) => void;
 };
+// Display name split across two lines: first name, then italicised surname.
+const [firstName, ...surnameParts] = PROFILE.name.split(' ');
+const lastName = surnameParts.join(' ');
 // Floating nav nodes positioned across the field (% of hero box).
 const NODES: NavNodeData[] = [
 {
@@ -137,9 +140,9 @@ export function Hero({ onNavigate }: HeroProps) {
             }}
             className="text-layered font-display font-light leading-[0.85] tracking-tight text-[clamp(3.25rem,13vw,10rem)]">
             
-            Macs
+            {firstName}
             <br />
-            <span className="italic">Dickinson</span>
+            <span className="italic">{lastName}</span>
           </motion.h1>
 
           <motion.p
