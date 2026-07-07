@@ -1,0 +1,26 @@
+[
+  {
+    "number": "048",
+    "title": "Making AI Stick Without the Hype",
+    "show": "The Engineering Room",
+    "date": "May 2026",
+    "duration": "52 min",
+    "description": "How to move engineering teams past AI theatre toward genuine, durable adoption."
+  },
+  {
+    "number": "041",
+    "title": "Org Design for Flow",
+    "show": "Deploy Friday",
+    "date": "Feb 2026",
+    "duration": "47 min",
+    "description": "Team Topologies in practice, and what actually changed value flow at LHV Bank."
+  },
+  {
+    "number": "033",
+    "title": "Mental Health in Engineering Leadership",
+    "show": "Lead Dev Radio",
+    "date": "Nov 2025",
+    "duration": "61 min",
+    "description": "An honest conversation about burnout, boundaries and leading people as humans first."
+  }
+]
