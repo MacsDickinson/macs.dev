@@ -51,24 +51,33 @@ npm run build    # production build → dist/
 npm run preview  # serve the production build locally
 ```
 
+> **Note:** the built site in `dist/` must be served over HTTP — use
+> `npm run preview` (or any static file server). Opening `dist/index.html`
+> directly from the file system shows a blank page, because the app's asset
+> URLs and client-side routing need a web server.
+
 ## Deployment (GitHub Pages, free)
 
 Every push to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
 which builds the site and publishes it to GitHub Pages at:
 
 ```
-https://macsdickinson.github.io/Speaking-Engagements-Portfolio/
+https://macsdickinson.github.io/macs.dev/
 ```
 
 **One-time setup:** in the repo go to *Settings → Pages* and set **Source**
 to **GitHub Actions**.
 
+The workflow reads the site's URL from the Pages configuration at build
+time (`actions/configure-pages`), so the asset base path stays correct if
+the repository is renamed or a custom domain is attached — no workflow
+edits needed.
+
 ### Using a custom domain (e.g. macs.dev)
 
-1. Add the domain under *Settings → Pages → Custom domain* and create the
-   DNS records GitHub shows you.
-2. Delete the `BASE_PATH` env block from the `Build` step in
-   `.github/workflows/deploy.yml` (the site will then be served from `/`).
+Add the domain under *Settings → Pages → Custom domain* and create the DNS
+records GitHub shows you. The next push to `main` (or a manual re-run of the
+deploy workflow) rebuilds the site for the new URL automatically.
 
 ## Known limitations
 
