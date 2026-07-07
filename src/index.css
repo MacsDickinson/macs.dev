@@ -1,0 +1,68 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+:root {
+  --paper: #f4f1ea;
+  --paper-alt: #ece7dc;
+  --ink: #16130f;
+  --ink-soft: #5c5850;
+  --line: #d8d2c4;
+  --accent: #ff5a2c;
+  --accent-deep: #d63e17;
+  /* Dark constellation field */
+  --field: #0e1116;
+  --field-soft: #161b22;
+  --field-line: #2a3140;
+  --electric: #6c5ce7;
+  --signal: #00b894;
+  --dim: #8a93a6;
+}
+html,
+body {
+  background-color: var(--field);
+  height: 100%;
+  overflow: hidden;
+}
+#root {
+  height: 100%;
+}
+body {
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+.font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+/* Fine paper grain */
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+/* Layered / 3D display shadow for the hero name */
+.text-layered {
+  text-shadow:
+    2px 2px 0 rgba(255, 90, 44, 0.22),
+    5px 5px 0 rgba(108, 92, 231, 0.18),
+    8px 8px 20px rgba(0, 0, 0, 0.35);
+}
+@keyframes node-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.25; }
+}
+.node-pulse {
+  animation: node-pulse 2.6s ease-in-out infinite;
+}
+::selection {
+  background: var(--accent);
+  color: var(--field);
+}
