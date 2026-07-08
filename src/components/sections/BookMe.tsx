@@ -20,10 +20,10 @@ const EMPTY: FormState = {
 const inputBase =
 'w-full bg-transparent border-b border-[var(--edge)] py-3 text-[var(--text)] placeholder-[var(--text-dim)] focus:outline-none focus:border-[var(--ac)] transition-colors';
 // FormSubmit relays submissions to this inbox as email — no backend needed.
-// Deliberately NOT PROFILE.email: contact@macs.dev is a Squarespace forward,
-// and FormSubmit's automated mail fails DMARC through the forwarding hop and
-// never arrives. Register the real inbox instead; once activated, swap this
-// for the random alias FormSubmit issues so the address isn't in the bundle.
+// Deliberately NOT PROFILE.email: contact@macs.dev is a Squarespace forward
+// and FormSubmit's activation emails didn't survive the hop — register a
+// real inbox directly. Changing this address means re-activating it via
+// FormSubmit's confirmation email (sent on first submission; can be slow).
 const FORM_INBOX = 'macs@macsdickinson.com';
 const FORM_ENDPOINT = `https://formsubmit.co/ajax/${FORM_INBOX}`;
 export function BookMe() {
@@ -51,6 +51,7 @@ export function BookMe() {
       ...prev,
       [key]: undefined
     }));
+    setStatus((s) => (s === 'error' ? 'idle' : s));
   };
   const validate = () => {
     const next: Partial<Record<keyof FormState, string>> = {};
