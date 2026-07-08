@@ -32,6 +32,13 @@ deployed to GitHub Pages via GitHub Actions.
 Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
 
+**Contact form:** `BookMe.tsx` POSTs to FormSubmit
+(`https://formsubmit.co/ajax/<PROFILE.email>`) — no backend, no API key. The
+inbox address comes from `src/content/profile.json`; a new address must be
+activated once via FormSubmit's confirmation email (triggered by the first
+submission). FormSubmit returns HTTP 200 even on non-delivery, so the code
+checks `success === "true"` in the response body — don't "simplify" that away.
+
 ## Design system — "Signal Deck" (dark neumorphism × retrofuturism)
 
 The whole site lives in **one dark world**. The hero is a dark constellation

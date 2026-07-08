@@ -81,11 +81,13 @@ deploy workflow) rebuilds the site for the new URL automatically.
 
 ## Known limitations
 
-- **The "Book me" form doesn't send anything yet** — it's a visual mock.
-  There is no backend on a static host; the quickest fix is a free form
-  service like [Formspree](https://formspree.io) or
-  [Web3Forms](https://web3forms.com) (point the form's `onSubmit` at their
-  endpoint), or swap the form for a `mailto:` link.
+- **The "Book me" form relays through [FormSubmit](https://formsubmit.co)**
+  (no backend on a static host). It emails the address in
+  `src/content/profile.json` (`email`), which must be **activated once**:
+  the first submission triggers a FormSubmit confirmation email — click the
+  "Activate Form" link in it. Until then, visitors see the error state with
+  a direct `mailto:` fallback. Changing the email in `profile.json` means
+  re-activating the new address.
 - Content is rendered client-side (it's a single-page app), which is fine
   for a personal site but means search engines see the JS-rendered page
   rather than pre-rendered HTML per post.

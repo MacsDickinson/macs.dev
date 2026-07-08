@@ -19,14 +19,20 @@ const EMPTY: FormState = {
 };
 const inputBase =
 'w-full bg-transparent border-b border-[var(--edge)] py-3 text-[var(--text)] placeholder-[var(--text-dim)] focus:outline-none focus:border-[var(--ac)] transition-colors';
+// FormSubmit relays submissions to this inbox as email — no backend needed.
+// The address must be activated once via the confirmation email FormSubmit
+// sends on the first submission.
+const FORM_ENDPOINT = `https://formsubmit.co/ajax/${PROFILE.email}`;
 export function BookMe() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>>(
     {});
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>(
+  const [status, setStatus] = useState<
+    'idle' | 'submitting' | 'success' | 'error'>(
     'idle'
   );
+  const [honeypot, setHoneypot] = useState('');
   const set =
   (key: keyof FormState) =>
   (
@@ -56,10 +62,41 @@ export function BookMe() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    if (honeypot) {
+      // Bot filled the hidden field — pretend it worked, send nothing.
+      setStatus('success');
+      setForm(EMPTY);
+      return;
+    }
     setStatus('submitting');
-    await new Promise((r) => setTimeout(r, 1100));
-    setStatus('success');
-    setForm(EMPTY);
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          organisation: form.organisation,
+          topic: form.topic,
+          message: form.message,
+          _subject: `macs.dev inquiry — ${form.topic} — ${form.name}`,
+          _template: 'table',
+          _replyto: form.email
+        })
+      });
+      // FormSubmit answers 200 even when it didn't deliver (e.g. the address
+      // hasn't been activated yet), flagging it in the body instead.
+      const data = await res.json();
+      if (!res.ok || String(data.success) !== 'true')
+      throw new Error(data.message ?? `FormSubmit responded ${res.status}`);
+      setStatus('success');
+      setForm(EMPTY);
+    } catch {
+      setStatus('error');
+    }
   };
   return (
     <section id="book" className="scroll-mt-20">
@@ -147,7 +184,17 @@ export function BookMe() {
                   onSubmit={onSubmit}
                   noValidate
                   className="space-y-8">
-                  
+
+                    <input
+                    type="text"
+                    name="_honey"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden" />
+
                     <div className="grid sm:grid-cols-2 gap-8">
                       <Field label="Name" error={errors.name}>
                         <input
@@ -219,8 +266,26 @@ export function BookMe() {
                     disabled={status === 'submitting'}
                     className="inline-flex items-center gap-3 rounded-xl bg-[var(--field)] px-8 py-4 font-mono text-xs uppercase tracking-[0.15em] text-[var(--text)] shadow-[var(--nm-flat)] transition-[transform,box-shadow,color] duration-300 hover:-translate-y-0.5 hover:text-[var(--ac)] hover:shadow-[var(--nm-hover)] active:translate-y-0 active:shadow-[var(--nm-inset)] disabled:opacity-60">
 
-                      {status === 'submitting' ? 'Sending…' : 'Send inquiry'}
+                      {status === 'submitting' ?
+                    'Sending…' :
+                    status === 'error' ?
+                    'Try again' :
+                    'Send inquiry'}
                     </button>
+
+                    {status === 'error' &&
+                  <p className="text-sm text-[var(--text-soft)]">
+                        Something went wrong sending that — please try again,
+                        or email me directly at{' '}
+                        <a
+                      href={`mailto:${PROFILE.email}`}
+                      className="text-[var(--ac)] border-b border-[var(--ac)]/40 hover:border-[var(--ac)] transition-colors">
+
+                          {PROFILE.email}
+                        </a>
+                        .
+                      </p>
+                  }
                   </motion.form>
                 }
               </AnimatePresence>
