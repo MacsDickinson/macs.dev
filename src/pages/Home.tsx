@@ -64,7 +64,7 @@ export function Home() {
   const current = active ? SECTIONS[active] : null;
   return (
     <div className="relative h-full w-full overflow-hidden bg-[var(--field)]">
-      <Hero onNavigate={goTo} />
+      <Hero onNavigate={goTo} covered={active !== null} />
 
       <AnimatePresence>
         {current && active &&

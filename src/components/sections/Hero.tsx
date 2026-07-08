@@ -1,92 +1,42 @@
-import React, { Children } from 'react';
+import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { PROFILE } from '../../data/content';
-import { ConstellationBackground } from '../ConstellationBackground';
-import { NavNode, type NavNodeData } from '../NavNode';
+import { useMediaQuery } from '../../useMediaQuery';
+
+// three.js + the scene are heavy — split them out so blog routes stay light.
+const HeroScene = React.lazy(() =>
+import('../HeroScene').then((m) => ({ default: m.HeroScene }))
+);
+
 type HeroProps = {
   onNavigate: (target: string) => void;
+  /** True while a section overlay covers the hero — pauses the 3D loop. */
+  covered?: boolean;
 };
-// Display name split across two lines: first name, then italicised surname.
-const [firstName, ...surnameParts] = PROFILE.name.split(' ');
-const lastName = surnameParts.join(' ');
-// Floating nav nodes positioned across the field (% of hero box).
-const NODES: NavNodeData[] = [
-{
-  label: 'Book me to speak',
-  target: 'book',
-  color: '#ff5a2c',
-  primary: true,
-  x: 76,
-  y: 22,
-  align: 'left',
-  delay: 0.5
-},
-{
-  label: 'Speaking',
-  target: 'speaking',
-  color: '#6c5ce7',
-  x: 83,
-  y: 60,
-  align: 'right',
-  delay: 0.7
-},
-{
-  label: 'Writing',
-  target: 'writing',
-  color: '#00b894',
-  x: 15,
-  y: 68,
-  align: 'left',
-  delay: 0.85
-},
-{
-  label: 'Work',
-  target: 'work',
-  color: '#8a93a6',
-  x: 64,
-  y: 34,
-  align: 'left',
-  delay: 1
-},
-{
-  label: 'Podcast',
-  target: 'podcast',
-  color: '#6c5ce7',
-  x: 26,
-  y: 30,
-  align: 'left',
-  delay: 1.15
-},
-{
-  label: 'About',
-  target: 'about',
-  color: '#00b894',
-  x: 84,
-  y: 82,
-  align: 'right',
-  delay: 1.3
-}];
 
-const item = {
-  hidden: {
-    opacity: 0,
-    y: 30
-  },
-  show: {
-    opacity: 1,
-    y: 0
-  }
-};
-export function Hero({ onNavigate }: HeroProps) {
+export function Hero({ onNavigate, covered }: HeroProps) {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   return (
     <section
       id="top"
       className="relative h-full w-full overflow-hidden bg-[var(--field)] text-[var(--paper)]">
-      
-      {/* Interactive canvas field */}
-      <div className="absolute inset-0">
-        <ConstellationBackground className="h-full w-full" />
-      </div>
+
+      {/* The name in glass + rotating starfield & nav stars */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.6, ease: 'easeOut' }}>
+
+        <Suspense fallback={null}>
+          <HeroScene
+            onNavigate={onNavigate}
+            showNodes={isDesktop}
+            paused={covered} />
+
+        </Suspense>
+
+      </motion.div>
 
       {/* Vignette to deepen edges */}
       <div
@@ -95,107 +45,35 @@ export function Hero({ onNavigate }: HeroProps) {
           background:
           'radial-gradient(120% 90% at 30% 25%, rgba(22,27,34,0) 40%, rgba(14,17,22,0.85) 100%)'
         }} />
-      
 
-      {/* Floating nav nodes */}
-      <div className="absolute inset-0 hidden md:block">
-        {NODES.map((n) =>
-        <NavNode key={n.target} node={n} onSelect={onNavigate} />
-        )}
-      </div>
 
-      {/* Centered name + tagline */}
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 md:px-10">
-        <motion.div
-          initial="hidden"
-          animate="show"
-          transition={{
-            staggerChildren: 0.12,
-            delayChildren: 0.1
-          }}
-          className="pointer-events-none">
-          
-          <motion.div
-            variants={item}
-            transition={{
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="mb-8 flex items-center gap-4">
-            
-            <span className="font-mono text-xs tracking-widest text-[var(--accent)]">
-              00
-            </span>
-            <span className="h-px w-16 bg-[var(--field-line)]" />
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--dim)]">
-              {PROFILE.role} @ {PROFILE.company}
-            </span>
-          </motion.div>
+      {/* The name lives in the canvas as glass — keep it in the document for
+          screen readers and search engines. */}
+      <h1 className="sr-only">{PROFILE.name}</h1>
 
-          <motion.h1
-            variants={item}
-            transition={{
-              duration: 0.85,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="text-layered font-display font-light leading-[0.85] tracking-tight text-[clamp(3.25rem,13vw,10rem)]">
-            
-            {firstName}
-            <br />
-            <span className="italic">{lastName}</span>
-          </motion.h1>
+      {/* Mobile: node targets as tappable pills (nav stars are desktop-only) */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
+        className="absolute inset-x-0 bottom-0 z-10 flex flex-wrap gap-2.5 p-6 md:hidden">
 
-          <motion.p
-            variants={item}
-            transition={{
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="mt-8 max-w-xl text-lg leading-relaxed text-[var(--dim)] md:text-xl">
-            
-            {PROFILE.tagline}
-          </motion.p>
+        <button
+          onClick={() => onNavigate('book')}
+          className="bg-[var(--accent)] px-5 py-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--field)]">
 
-          <motion.p
-            variants={item}
-            transition={{
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="mt-6 hidden font-mono text-xs uppercase tracking-[0.2em] text-[var(--dim)]/70 md:block">
-            
-            An interactive constellation — pick a drifting node to explore.
-          </motion.p>
-        </motion.div>
+          Book me to speak →
+        </button>
+        {['speaking', 'work', 'writing', 'podcast', 'about'].map((t) =>
+        <button
+          key={t}
+          onClick={() => onNavigate(t)}
+          className="border border-[var(--field-line)] px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--dim)]">
 
-        {/* Mobile: node targets as tappable pills (nodes are hidden on small screens) */}
-        <motion.div
-          variants={item}
-          initial="hidden"
-          animate="show"
-          transition={{
-            delay: 0.5,
-            duration: 0.6
-          }}
-          className="mt-10 flex flex-wrap gap-2.5 md:hidden">
-          
-          <button
-            onClick={() => onNavigate('book')}
-            className="bg-[var(--accent)] px-5 py-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--field)]">
-            
-            Book me to speak →
+            {t}
           </button>
-          {['speaking', 'work', 'writing', 'podcast', 'about'].map((t) =>
-          <button
-            key={t}
-            onClick={() => onNavigate(t)}
-            className="border border-[var(--field-line)] px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--dim)]">
-            
-              {t}
-            </button>
-          )}
-        </motion.div>
-      </div>
+        )}
+      </motion.div>
     </section>);
 
 }
