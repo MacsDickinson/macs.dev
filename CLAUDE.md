@@ -33,11 +33,14 @@ Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
 
 **Contact form:** `BookMe.tsx` POSTs to FormSubmit
-(`https://formsubmit.co/ajax/<PROFILE.email>`) — no backend, no API key. The
-inbox address comes from `src/content/profile.json`; a new address must be
-activated once via FormSubmit's confirmation email (triggered by the first
-submission). FormSubmit returns HTTP 200 even on non-delivery, so the code
-checks `success === "true"` in the response body — don't "simplify" that away.
+(`https://formsubmit.co/ajax/<FORM_INBOX>`) — no backend, no API key.
+`FORM_INBOX` is deliberately **not** `PROFILE.email`: `contact@macs.dev` is a
+Squarespace forward, and FormSubmit's automated mail fails DMARC through the
+forwarding hop and never arrives — register a real inbox directly. A new
+address must be activated once via FormSubmit's confirmation email (triggered
+by the first submission). FormSubmit returns HTTP 200 even on non-delivery,
+so the code checks `success === "true"` in the response body — don't
+"simplify" that away.
 
 ## Design system — "Signal Deck" (dark neumorphism × retrofuturism)
 

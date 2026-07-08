@@ -82,11 +82,13 @@ deploy workflow) rebuilds the site for the new URL automatically.
 ## Known limitations
 
 - **The "Book me" form relays through [FormSubmit](https://formsubmit.co)**
-  (no backend on a static host). It emails the address in
-  `src/content/profile.json` (`email`), which must be **activated once**:
-  the first submission triggers a FormSubmit confirmation email — click the
-  "Activate Form" link in it. Until then, visitors see the error state with
-  a direct `mailto:` fallback. Changing the email in `profile.json` means
+  (no backend on a static host). It emails the `FORM_INBOX` address set in
+  `src/components/sections/BookMe.tsx` — a real inbox, *not* the public
+  forwarding alias, because FormSubmit's mail fails DMARC through the
+  `*@macs.dev` forward and never arrives. The address must be **activated
+  once**: the first submission triggers a FormSubmit confirmation email —
+  click the "Activate Form" link in it. Until then, visitors see the error
+  state with a direct `mailto:` fallback. Changing the inbox means
   re-activating the new address.
 - Content is rendered client-side (it's a single-page app), which is fine
   for a personal site but means search engines see the JS-rendered page
