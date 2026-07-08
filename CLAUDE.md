@@ -19,8 +19,10 @@ deployed to GitHub Pages via GitHub Actions.
 | --- | --- |
 | `src/pages/Home.tsx` | Constellation shell; owns which overlay section is `active` |
 | `src/pages/BlogPost.tsx` | `/blog/:slug` reading view (standalone route) |
-| `src/components/sections/Hero.tsx` | The constellation "main level" — the visual north star everything else aligns to |
-| `src/components/ConstellationBackground.tsx` | Cursor-reactive `<canvas>` particle field |
+| `src/components/sections/Hero.tsx` | The constellation "main level" — no copy, just the lazy-loaded 3D scene + sr-only `<h1>` + mobile nav pills |
+| `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial), a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only on the home route |
+| `src/components/NavNode.tsx` | Dot + label button for a nav star; anchored in 3D by `HeroScene` |
+| `public/fonts/*.typeface.json` | Fraunces subsetted to the name's glyphs for the 3D text (see below) |
 | `src/components/SectionOverlay.tsx` | Circle-clip reveal panel that every section renders inside; sets the section accent |
 | `src/components/sections/*` | About, Speaking, Work, Podcast, Writing, BookMe |
 | `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Shared section chrome + scroll-reveal wrapper |
@@ -31,6 +33,24 @@ deployed to GitHub Pages via GitHub Actions.
 
 Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
+
+**Hero scene notes:**
+- The pointer does **not** attract particles — it only steers the direction of
+  the off-screen light that reveals the glass name (raking angles glint; a
+  frontal light would mirror into the camera and blow the effect out, which is
+  why `LightRig` clamps elevation low). Touch devices get a slow auto-orbit.
+- Nav stars sit in a loose ring inside the rotating sky group so a full
+  revolution never carries them off-screen. They drift constantly, so
+  Playwright must click them with `{ force: true }` (they never pass its
+  "stable" check).
+- The 3D fonts in `public/fonts/` are typeface-JSON subsets ("MacsDickinson"
+  glyphs only) of Fraunces instanced at `opsz=72 wght=340`. To regenerate:
+  `fonttools varLib.instancer` on the Google Fonts variable TTF, then parse
+  with three's `TTFLoader` in Node and keep only the needed glyphs.
+- `prefers-reduced-motion` freezes sky rotation, float, and the light sweep.
+- Stack pins for React 18: `@react-three/fiber@8`, `drei@9`,
+  `@react-three/postprocessing@2`, `three@0.169` — don't bump majors until
+  React 19.
 
 **Contact form:** `BookMe.tsx` POSTs to FormSubmit
 (`https://formsubmit.co/ajax/<FORM_INBOX>`) — no backend, no API key.
@@ -122,6 +142,11 @@ PLAYWRIGHT_BROWSERS_PATH=~/Library/Caches/ms-playwright \
 
 Then read the PNG. Verify against the hero for cohesion and check each
 section's accent is correct.
+
+The hero itself is WebGL (renders fine in headless Chromium via SwiftShader)
+but needs `--wait-for-timeout=4500` or so for the lazy chunk + font + first
+frames. To see the light sweep, drive it with a scripted Playwright
+`mouse.move(...)` and a ~2s settle before the screenshot.
 
 ## Git & PR conventions
 

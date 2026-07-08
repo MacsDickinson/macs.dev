@@ -5,9 +5,6 @@ export type NavNodeData = {
   target: string;
   color: string;
   primary?: boolean;
-  /** Position as percentage of the hero field. */
-  x: number;
-  y: number;
   align?: 'left' | 'right';
   delay?: number;
 };
@@ -21,8 +18,6 @@ export function NavNode({ node, onSelect }: NavNodeProps) {
     target,
     color,
     primary,
-    x,
-    y,
     align = 'left',
     delay = 0
   } = node;
@@ -40,11 +35,7 @@ export function NavNode({ node, onSelect }: NavNodeProps) {
   }, [target, label]);
   return (
     <motion.div
-      style={{
-        left: `${x}%`,
-        top: `${y}%`
-      }}
-      className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
+      className="relative"
       initial={{
         opacity: 0,
         scale: 0.6
