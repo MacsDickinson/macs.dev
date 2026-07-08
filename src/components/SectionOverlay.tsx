@@ -30,7 +30,8 @@ export function SectionOverlay({
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className="fixed inset-0 z-40 bg-[var(--paper)]"
+      className="fixed inset-0 z-40 bg-[var(--ground)] text-[var(--text)]"
+      style={{ ['--ac' as string]: color }}
       initial={{
         clipPath: 'circle(0% at 50% 50%)',
         opacity: 0.4
@@ -47,13 +48,24 @@ export function SectionOverlay({
         duration: 0.6,
         ease: [0.76, 0, 0.24, 1]
       }}>
-      
+
+      {/* Atmosphere — the constellation dissolves into a backlit instrument deck */}
+      <div className="pointer-events-none absolute inset-0 z-0 deck-grid" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 z-0 deck-scan" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 z-0 deck-grain" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        aria-hidden="true"
+        style={{
+          background: `radial-gradient(120% 80% at 50% -5%, ${color}1f 0%, transparent 55%)`
+        }} />
+
       {/* Top bar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-10">
         <button
           onClick={onClose}
-          className="pointer-events-auto group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]">
-          
+          className="pointer-events-auto group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-[var(--text-soft)] transition-colors hover:text-[var(--text)]">
+
           <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
           Constellation
         </button>
@@ -64,15 +76,15 @@ export function SectionOverlay({
               background: color,
               boxShadow: `0 0 10px ${color}`
             }} />
-          
-          <span className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--ink)]">
+
+          <span className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--text)]">
             {label}
           </span>
           <button
             onClick={onClose}
             aria-label="Close section"
-            className="ml-3 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] text-[var(--ink)] transition-colors hover:bg-[var(--ink)] hover:text-[var(--paper)]">
-            
+            className="ml-3 flex h-9 w-9 items-center justify-center rounded-full text-[var(--text)] bg-[var(--surface)] shadow-[var(--nm-flat)] transition-transform hover:scale-105 active:scale-95 active:shadow-[var(--nm-inset)]">
+
             <XIcon className="h-4 w-4" />
           </button>
         </div>
@@ -80,7 +92,7 @@ export function SectionOverlay({
 
       {/* Scrollable content */}
       <motion.div
-        className="h-full w-full overflow-y-auto"
+        className="relative z-10 h-full w-full overflow-y-auto"
         initial={{
           opacity: 0,
           y: 24

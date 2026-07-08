@@ -16,23 +16,23 @@ export function SectionHeader({
     <div className="mb-12 md:mb-20">
       <Reveal>
         <div className="flex items-center gap-4 mb-6">
-          <span className="font-mono text-xs tracking-widest text-[var(--accent)]">
+          <span className="font-mono text-xs tracking-widest text-[var(--ac)]">
             {index}
           </span>
-          <span className="h-px flex-1 max-w-[120px] bg-[var(--line)]" />
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--ink-soft)]">
+          <span className="h-px flex-1 max-w-[120px] bg-gradient-to-r from-[var(--ac)] to-transparent" />
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">
             {label}
           </span>
         </div>
       </Reveal>
       <Reveal delay={0.05}>
-        <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight text-[var(--ink)] max-w-4xl">
+        <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight text-[var(--text)] max-w-4xl [font-variation-settings:'opsz'_144]">
           {title}
         </h2>
       </Reveal>
       {description &&
       <Reveal delay={0.1}>
-          <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--ink-soft)] leading-relaxed">
+          <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--text-soft)] leading-relaxed">
             {description}
           </p>
         </Reveal>
