@@ -37,8 +37,12 @@ the component + `index.css`. Keep the two separate.
 **Hero scene notes:**
 - The pointer does **not** attract particles — it only steers the direction of
   the off-screen light that reveals the glass name (raking angles glint; a
-  frontal light would mirror into the camera and blow the effect out, which is
-  why `LightRig` clamps elevation low). Touch devices get a slow auto-orbit.
+  frontal light would mirror into the camera and blow the effect out). The
+  light's direction is damped **as an angle around the screen rim** at fixed
+  low elevation — never lerp the direction vector, or crossing the cursor
+  through mid-screen sends the light through a frontal orientation and the
+  name flashes white. Touch devices get a slow auto-orbit. The name also
+  leans a few degrees toward the cursor (`tiltRef` in `GlassName`).
 - Nav stars sit in a loose ring inside the rotating sky group so a full
   revolution never carries them off-screen. They drift constantly, so
   Playwright must click them with `{ force: true }` (they never pass its

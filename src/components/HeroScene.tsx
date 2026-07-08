@@ -261,6 +261,20 @@ function GlassName({ reduced }: { reduced: boolean }) {
   const romanFont = useLoader(FontLoader, ROMAN_FONT);
   const italicFont = useLoader(FontLoader, ITALIC_FONT);
   const { viewport } = useThree();
+  const tiltRef = useRef<THREE.Group>(null);
+
+  // The name leans gently toward the cursor, so moving the light also turns
+  // the object into/away from it — kept small so the front faces never swing
+  // far enough to mirror the key light into the camera.
+  useFrame((state, delta) => {
+    if (!tiltRef.current || reduced) return;
+    easing.dampE(
+      tiltRef.current.rotation,
+      [-state.pointer.y * 0.08, state.pointer.x * 0.12, 0],
+      0.5,
+      delta
+    );
+  });
 
   const { geometry, width, height } = useMemo(() => {
     const SIZE = 3;
@@ -306,12 +320,13 @@ function GlassName({ reduced }: { reduced: boolean }) {
   );
 
   return (
-    <Float
-      speed={reduced ? 0 : 1.1}
-      rotationIntensity={0.1}
-      floatIntensity={0.3}>
+    <group ref={tiltRef}>
+      <Float
+        speed={reduced ? 0 : 1.1}
+        rotationIntensity={0.1}
+        floatIntensity={0.3}>
 
-      <mesh geometry={geometry} scale={scale}>
+        <mesh geometry={geometry} scale={scale}>
         <MeshTransmissionMaterial
           backside
           backsideThickness={0.2}
@@ -327,8 +342,9 @@ function GlassName({ reduced }: { reduced: boolean }) {
           clearcoatRoughness={0.25}
           color="#e3e9f4" />
 
-      </mesh>
-    </Float>);
+        </mesh>
+      </Float>
+    </group>);
 
 }
 
@@ -336,15 +352,18 @@ function GlassName({ reduced }: { reduced: boolean }) {
 /* Light rig — direction follows the cursor from off-screen            */
 /* ------------------------------------------------------------------ */
 
-// How high the light sits above the screen plane. Kept low so the light
-// always *rakes* across the glass from off-screen — a frontal light would
-// mirror straight back into the camera and light the whole face up.
-const LIGHT_ELEVATION = 0.26;
+// How high the light sits above the screen plane (sine of elevation).
+// Fixed and low so the light always *rakes* in from beyond the window edge —
+// a frontal light would mirror straight back into the camera and light the
+// whole face up.
+const LIGHT_ELEVATION = 0.24;
 
 function LightRig({ reduced }: { reduced: boolean }) {
-  const azimuth = useRef(new THREE.Vector2(0.74, 0.67).normalize());
-  const dir = useRef(new THREE.Vector3(0.72, 0.65, LIGHT_ELEVATION).normalize());
-  const target = useMemo(() => new THREE.Vector3(), []);
+  // The light's direction is tracked as an angle around the screen rim, and
+  // damped as an angle: when the cursor crosses the middle the light slides
+  // *around* the rim instead of lerping through the centre (which would pass
+  // through a frontal, canvas-facing direction and flash the glass white).
+  const theta = useRef({ value: Math.atan2(0.67, 0.74) });
   const lightRef = useRef<THREE.DirectionalLight>(null);
   const envKeyRef = useRef<THREE.Group>(null);
   const finePointer = useMediaQuery('(pointer: fine)');
@@ -366,14 +385,17 @@ function LightRig({ reduced }: { reduced: boolean }) {
     }
     // The cursor's direction from centre picks which edge of the window the
     // light comes in from; near the centre we hold the last direction.
-    if (Math.hypot(px, py) > 0.12) azimuth.current.set(px, py).normalize();
-    const az = azimuth.current;
-    target.set(az.x, az.y, LIGHT_ELEVATION).normalize();
-    easing.damp3(dir.current, target, 0.4, delta);
-    const d = dir.current;
-    if (lightRef.current) lightRef.current.position.set(d.x * 16, d.y * 16, d.z * 16);
+    if (Math.hypot(px, py) > 0.12) {
+      easing.dampAngle(theta.current, 'value', Math.atan2(py, px), 0.4, delta);
+    }
+    const planar = Math.sqrt(1 - LIGHT_ELEVATION * LIGHT_ELEVATION);
+    const dx = Math.cos(theta.current.value) * planar;
+    const dy = Math.sin(theta.current.value) * planar;
+    if (lightRef.current) {
+      lightRef.current.position.set(dx * 16, dy * 16, LIGHT_ELEVATION * 16);
+    }
     if (envKeyRef.current) {
-      envKeyRef.current.position.set(d.x * 9, d.y * 9, d.z * 9);
+      envKeyRef.current.position.set(dx * 9, dy * 9, LIGHT_ELEVATION * 9);
       envKeyRef.current.lookAt(0, 0, 0);
     }
   });
