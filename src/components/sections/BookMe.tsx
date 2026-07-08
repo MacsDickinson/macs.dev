@@ -18,7 +18,7 @@ const EMPTY: FormState = {
   message: ''
 };
 const inputBase =
-'w-full bg-transparent border-b border-[var(--line)] py-3 text-[var(--ink)] placeholder-[var(--ink-soft)]/60 focus:outline-none focus:border-[var(--ink)] transition-colors';
+'w-full bg-transparent border-b border-[var(--edge)] py-3 text-[var(--text)] placeholder-[var(--text-dim)] focus:outline-none focus:border-[var(--ac)] transition-colors';
 export function BookMe() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [errors, setErrors] = useState<
@@ -62,39 +62,36 @@ export function BookMe() {
     setForm(EMPTY);
   };
   return (
-    <section
-      id="book"
-      className="scroll-mt-20 border-t border-[var(--line)] bg-[var(--ink)] text-[var(--paper)]">
-      
+    <section id="book" className="scroll-mt-20">
       <div className="mx-auto max-w-6xl px-6 md:px-10 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-12 lg:gap-20">
           <div className="md:col-span-5">
             <Reveal>
               <div className="flex items-center gap-4 mb-6">
-                <span className="font-mono text-xs tracking-widest text-[var(--accent)]">
+                <span className="font-mono text-xs tracking-widest text-[var(--ac)]">
                   06
                 </span>
-                <span className="h-px w-16 bg-[var(--paper)]/25" />
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--paper)]/60">
+                <span className="h-px w-16 bg-gradient-to-r from-[var(--ac)] to-transparent" />
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">
                   Book me to speak
                 </span>
               </div>
-              <h2 className="font-display text-4xl md:text-6xl font-light leading-[0.95] tracking-tight">
-                Let&apos;s put me on <span className="italic">your stage</span>.
+              <h2 className="font-display text-4xl md:text-6xl font-light leading-[0.95] tracking-tight text-[var(--text)] [font-variation-settings:'opsz'_144]">
+                Let&apos;s put me on <span className="italic text-[var(--ac)]">your stage</span>.
               </h2>
-              <p className="mt-6 max-w-md text-[var(--paper)]/70 leading-relaxed">
+              <p className="mt-6 max-w-md text-[var(--text-soft)] leading-relaxed">
                 Planning a conference, internal summit, or podcast episode? Tell
                 me what you&apos;re building and I&apos;ll get back to you
                 personally.
               </p>
               <div className="mt-8 space-y-2">
-                <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--paper)]/50">
+                <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
                   Or reach me directly
                 </p>
                 <a
                   href={`mailto:${PROFILE.email}`}
-                  className="font-mono text-lg text-[var(--paper)] border-b border-[var(--paper)]/40 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors">
-                  
+                  className="font-mono text-lg text-[var(--text)] border-b border-[var(--edge)] hover:border-[var(--ac)] hover:text-[var(--ac)] transition-colors">
+
                   {PROFILE.email}
                 </a>
               </div>
@@ -103,6 +100,7 @@ export function BookMe() {
 
           <div className="md:col-span-7">
             <Reveal delay={0.1}>
+              <div className="rounded-2xl bg-[var(--surface)] p-8 md:p-10 shadow-[var(--nm-raise)]">
               <AnimatePresence mode="wait">
                 {status === 'success' ?
                 <motion.div
@@ -115,22 +113,22 @@ export function BookMe() {
                     opacity: 1,
                     y: 0
                   }}
-                  className="flex flex-col items-start gap-5 border border-[var(--paper)]/20 p-10">
-                  
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent)]">
+                  className="flex flex-col items-start gap-5">
+
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ac)] text-[var(--ground)] shadow-[0_0_24px_-3px_var(--ac)]">
                       <CheckIcon className="h-6 w-6" />
                     </span>
-                    <h3 className="font-display text-3xl font-light">
+                    <h3 className="font-display text-3xl font-light text-[var(--text)]">
                       Message sent.
                     </h3>
-                    <p className="text-[var(--paper)]/70 max-w-sm">
+                    <p className="text-[var(--text-soft)] max-w-sm">
                       Thanks for reaching out — I&apos;ll be in touch within a
                       few days to talk details.
                     </p>
                     <button
                     onClick={() => setStatus('idle')}
-                    className="font-mono text-xs uppercase tracking-[0.15em] border-b border-[var(--paper)]/40 pb-1 hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors">
-                    
+                    className="font-mono text-xs uppercase tracking-[0.15em] border-b border-[var(--edge)] pb-1 text-[var(--text)] hover:text-[var(--ac)] hover:border-[var(--ac)] transition-colors">
+
                       Send another
                     </button>
                   </motion.div> :
@@ -191,14 +189,14 @@ export function BookMe() {
                         <option
                           key={t}
                           value={t}
-                          className="bg-[var(--ink)]">
+                          className="bg-[var(--surface)] text-[var(--text)]">
                           
                               {t}
                             </option>
                         )}
                           <option
                           value="Something else"
-                          className="bg-[var(--ink)]">
+                          className="bg-[var(--surface)] text-[var(--text)]">
                           
                             Something else
                           </option>
@@ -219,13 +217,14 @@ export function BookMe() {
                     <button
                     type="submit"
                     disabled={status === 'submitting'}
-                    className="inline-flex items-center gap-3 bg-[var(--paper)] text-[var(--ink)] px-8 py-4 font-mono text-xs uppercase tracking-[0.15em] hover:bg-[var(--accent)] hover:text-[var(--paper)] transition-colors disabled:opacity-60">
-                    
+                    className="inline-flex items-center gap-3 rounded-xl bg-[var(--field)] px-8 py-4 font-mono text-xs uppercase tracking-[0.15em] text-[var(--text)] shadow-[var(--nm-flat)] transition-[transform,box-shadow,color] duration-300 hover:-translate-y-0.5 hover:text-[var(--ac)] hover:shadow-[var(--nm-hover)] active:translate-y-0 active:shadow-[var(--nm-inset)] disabled:opacity-60">
+
                       {status === 'submitting' ? 'Sending…' : 'Send inquiry'}
                     </button>
                   </motion.form>
                 }
               </AnimatePresence>
+              </div>
             </Reveal>
           </div>
         </div>
@@ -244,12 +243,12 @@ function Field({
 }: {label: string;error?: string;children: React.ReactNode;}) {
   return (
     <label className="block">
-      <span className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--paper)]/50">
+      <span className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
         {label}
       </span>
       <div className="mt-1">{children}</div>
       {error &&
-      <span className="mt-1 block text-xs text-[var(--accent)]">{error}</span>
+      <span className="mt-1 block text-xs text-[var(--ac)]">{error}</span>
       }
     </label>);
 

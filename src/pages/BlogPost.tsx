@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Footer } from '../components/Footer';
 import { BLOG_POSTS, PROFILE } from '../data/content';
+
 export function BlogPost() {
   const { slug } = useParams<{
     slug: string;
@@ -15,14 +16,16 @@ export function BlogPost() {
   }, [slug]);
   if (!post) {
     return (
-      <div className="h-full w-full overflow-y-auto bg-[var(--paper)] flex flex-col items-center justify-center gap-6 px-6 text-center">
-        <p className="font-display text-4xl text-[var(--ink)]">
+      <div
+        className="h-full w-full overflow-y-auto bg-[var(--ground)] text-[var(--text)] flex flex-col items-center justify-center gap-6 px-6 text-center"
+        style={{ ['--ac' as string]: 'var(--signal)' }}>
+        <p className="font-display text-4xl text-[var(--text)]">
           Post not found
         </p>
         <Link
           to="/"
-          className="font-mono text-xs uppercase tracking-[0.15em] border-b border-[var(--ink)] pb-1 hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors">
-          
+          className="font-mono text-xs uppercase tracking-[0.15em] border-b border-[var(--ac)] pb-1 text-[var(--text)] hover:text-[var(--ac)] transition-colors">
+
           Back home
         </Link>
       </div>);
@@ -30,87 +33,97 @@ export function BlogPost() {
   }
   const more = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 2);
   return (
-    <div className="h-full w-full overflow-y-auto bg-[var(--paper)]">
-      <div className="mx-auto max-w-3xl px-6 md:px-10 pt-16 pb-24">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors">
-          
-          <ArrowLeftIcon className="h-4 w-4" />
-          All writing
-        </Link>
+    <div
+      className="relative h-full w-full overflow-y-auto bg-[var(--ground)] text-[var(--text)]"
+      style={{ ['--ac' as string]: 'var(--signal)' }}>
 
-        <motion.article
-          initial={{
-            opacity: 0,
-            y: 24
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          transition={{
-            duration: 0.7,
-            ease: [0.22, 1, 0.36, 1]
-          }}
-          className="mt-12">
-          
-          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--ink-soft)]">
-            <span className="text-[var(--accent)]">{post.tag}</span>
-            <span>·</span>
-            <span>{format(new Date(post.date), 'dd MMM yyyy')}</span>
-            <span>·</span>
-            <span>{post.readingTime}</span>
-          </div>
+      {/* Atmosphere — same instrument-deck world as the sections */}
+      <div className="pointer-events-none fixed inset-0 z-0 deck-grid" aria-hidden="true" />
+      <div className="pointer-events-none fixed inset-0 z-0 deck-scan" aria-hidden="true" />
+      <div className="pointer-events-none fixed inset-0 z-0 deck-grain" aria-hidden="true" />
 
-          <h1 className="mt-6 font-display text-4xl md:text-6xl font-light leading-[1] tracking-tight text-[var(--ink)]">
-            {post.title}
-          </h1>
+      <div className="relative z-10">
+        <div className="mx-auto max-w-3xl px-6 md:px-10 pt-16 pb-24">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-soft)] hover:text-[var(--text)] transition-colors">
 
-          <p className="mt-8 text-xl md:text-2xl font-display font-light leading-relaxed text-[var(--ink-soft)]">
-            {post.excerpt}
-          </p>
+            <ArrowLeftIcon className="h-4 w-4" />
+            All writing
+          </Link>
 
-          <div className="mt-10 h-px bg-[var(--line)]" />
+          <motion.article
+            initial={{
+              opacity: 0,
+              y: 24
+            }}
+            animate={{
+              opacity: 1,
+              y: 0
+            }}
+            transition={{
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1]
+            }}
+            className="mt-10 rounded-3xl bg-[var(--surface)] p-8 shadow-[var(--nm-raise-lg)] md:p-12 lg:p-16">
 
-          <div className="mt-10 space-y-6">
-            {post.body.map((para, i) =>
-            <p key={i} className="text-lg leading-relaxed text-[var(--ink)]">
-                {para}
-              </p>
-            )}
-          </div>
-
-          <div className="mt-14 border-t border-[var(--line)] pt-6 font-mono text-xs uppercase tracking-[0.15em] text-[var(--ink-soft)]">
-            Written by {PROFILE.name}
-          </div>
-        </motion.article>
-
-        {more.length > 0 &&
-        <div className="mt-20">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--ink-soft)] mb-6">
-              Keep reading
-            </p>
-            <div className="grid sm:grid-cols-2 gap-px bg-[var(--line)] border border-[var(--line)]">
-              {more.map((p) =>
-            <Link
-              key={p.slug}
-              to={`/blog/${p.slug}`}
-              className="group bg-[var(--paper)] p-6 hover:bg-[var(--paper-alt)] transition-colors">
-              
-                  <span className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">
-                    {p.tag}
-                  </span>
-                  <h3 className="mt-3 font-display text-xl font-light text-[var(--ink)] leading-snug">
-                    {p.title}
-                  </h3>
-                </Link>
-            )}
+            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-soft)]">
+              <span className="text-[var(--ac)]">{post.tag}</span>
+              <span>·</span>
+              <span>{format(new Date(post.date), 'dd MMM yyyy')}</span>
+              <span>·</span>
+              <span>{post.readingTime}</span>
             </div>
-          </div>
-        }
+
+            <h1 className="mt-6 font-display text-4xl md:text-6xl font-light leading-[1] tracking-tight text-[var(--text)] [font-variation-settings:'opsz'_144]">
+              {post.title}
+            </h1>
+
+            <p className="mt-8 font-display text-xl md:text-2xl font-light italic leading-relaxed text-[var(--text-soft)]">
+              {post.excerpt}
+            </p>
+
+            <div className="mt-10 h-px bg-[var(--edge-soft)]" />
+
+            <div className="mt-10 space-y-6">
+              {post.body.map((para, i) =>
+              <p key={i} className="text-lg leading-relaxed text-[#dfe3ea]">
+                  {para}
+                </p>
+              )}
+            </div>
+
+            <div className="mt-14 border-t border-[var(--edge-soft)] pt-6 font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
+              Written by {PROFILE.name}
+            </div>
+          </motion.article>
+
+          {more.length > 0 &&
+          <div className="mt-20">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)] mb-6">
+                Keep reading
+              </p>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {more.map((p) =>
+              <Link
+                key={p.slug}
+                to={`/blog/${p.slug}`}
+                className="group rounded-2xl bg-[var(--surface)] p-6 no-underline shadow-[var(--nm-raise)] transition-[transform,box-shadow] duration-300 [transition-timing-function:cubic-bezier(.2,.8,.25,1)] hover:-translate-y-1.5 hover:shadow-[var(--nm-hover)]">
+
+                    <span className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--ac)]">
+                      {p.tag}
+                    </span>
+                    <h3 className="mt-3 font-display text-xl font-light leading-snug text-[var(--text)]">
+                      {p.title}
+                    </h3>
+                  </Link>
+              )}
+              </div>
+            </div>
+          }
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </div>);
 
 }
