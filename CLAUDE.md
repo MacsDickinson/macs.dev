@@ -48,7 +48,11 @@ the component + `index.css`. Keep the two separate.
   Playwright must click them with `{ force: true }` (they never pass its
   "stable" check).
 - The 3D fonts in `public/fonts/` are typeface-JSON subsets ("MacsDickinson"
-  glyphs only) of Fraunces instanced at `opsz=72 wght=340`. To regenerate:
+  glyphs only) of Fraunces instanced at `opsz=72 wght=340`. Reference them
+  through `import.meta.env.BASE_URL`, never a bare `/fonts/...` — GitHub
+  Pages serves the site from `/macs.dev/`, and hardcoded absolute URLs 404
+  there (Vite only rewrites *imported* assets, not string URLs). To
+  regenerate:
   `fonttools varLib.instancer` on the Google Fonts variable TTF, then parse
   with three's `TTFLoader` in Node and keep only the needed glyphs.
 - `prefers-reduced-motion` freezes sky rotation, float, and the light sweep.
