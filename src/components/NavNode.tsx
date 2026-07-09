@@ -91,8 +91,9 @@ export function NavNode({ node, onSelect }: NavNodeProps) {
             
           </span>
 
-          {/* Label */}
+          {/* Label — the shadow keeps it readable over bright backdrops */}
           <span
+            style={{ textShadow: '0 1px 10px rgba(8,10,14,0.85)' }}
             className={`font-mono text-[11px] uppercase tracking-[0.18em] whitespace-nowrap transition-colors ${primary ? 'text-[var(--paper)] font-medium' : 'text-[var(--dim)] group-hover:text-[var(--paper)]'}`}>
             
             {label}

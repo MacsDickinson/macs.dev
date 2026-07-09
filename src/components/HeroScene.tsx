@@ -15,6 +15,13 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { easing } from 'maath';
 import { NavNode, type NavNodeData } from './NavNode';
 import { useMediaQuery } from '../useMediaQuery';
+import {
+  NebulaBackdrop,
+  WeatherBackdrop,
+  getWeatherLook,
+  useWeather,
+  type BackdropKind
+} from './HeroBackdrops';
 
 /**
  * The constellation "main level" rendered with three.js:
@@ -444,10 +451,23 @@ type HeroSceneProps = {
   showNodes: boolean;
   /** Stop the render loop, e.g. while a section overlay covers the hero. */
   paused?: boolean;
+  /** PROTOTYPE: alternative backdrops, selected via ?bg= (see HeroBackdrops). */
+  backdrop?: BackdropKind;
 };
 
-export function HeroScene({ onNavigate, showNodes, paused }: HeroSceneProps) {
+export function HeroScene({
+  onNavigate,
+  showNodes,
+  paused,
+  backdrop = 'space'
+}: HeroSceneProps) {
   const reduced = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const wx = useWeather(backdrop === 'weather');
+  const look = wx ? getWeatherLook(wx) : null;
+  // Scene background also feeds the transmission buffer — it's what the
+  // glass refracts, so it must be a real colour, never transparent black.
+  const background = look ? look.bg : backdrop === 'nebula' ? '#131826' : '#0e1116';
+  const showStars = look ? look.starry : true;
   return (
     <Canvas
       frameloop={paused ? 'never' : 'always'}
@@ -456,22 +476,27 @@ export function HeroScene({ onNavigate, showNodes, paused }: HeroSceneProps) {
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}>
 
       <Suspense fallback={null}>
-        {/* Real scene background (matches --field) so the transmission
-            buffer refracts the field colour, not black — this is what keeps
-            the glass "barely there" instead of a dark silhouette. */}
-        <color attach="background" args={['#0e1116']} />
+        <color attach="background" args={[background]} />
+        {look && <WeatherBackdrop wx={wx!} />}
         {/* Slight tilt so the rotation reads as depth, not a flat spin */}
         <group rotation={[-0.1, 0.05, 0]}>
           <RotatingField reduced={reduced}>
-            <Starfield />
+            {backdrop === 'nebula' && <NebulaBackdrop />}
+            {showStars && <Starfield />}
             {showNodes && <NavStars onNavigate={onNavigate} />}
           </RotatingField>
         </group>
         <GlassName reduced={reduced} />
         <LightRig reduced={reduced} />
-        {/* Bloom makes the raking glints ignite while the rest stays dark */}
+        {/* Bloom makes the raking glints ignite while the rest stays dark;
+            bright weather skies raise the threshold so they don't wash out */}
         <EffectComposer>
-          <Bloom mipmapBlur luminanceThreshold={0.4} intensity={1.2} levels={7} />
+          <Bloom
+            mipmapBlur
+            luminanceThreshold={look ? look.bloomThreshold : 0.4}
+            intensity={look ? look.bloomIntensity : 1.2}
+            levels={7} />
+
         </EffectComposer>
       </Suspense>
     </Canvas>);

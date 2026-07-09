@@ -1,7 +1,8 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { PROFILE } from '../../data/content';
 import { useMediaQuery } from '../../useMediaQuery';
+import { backdropFromUrl } from '../HeroBackdrops';
 
 // three.js + the scene are heavy — split them out so blog routes stay light.
 const HeroScene = React.lazy(() =>
@@ -16,6 +17,8 @@ type HeroProps = {
 
 export function Hero({ onNavigate, covered }: HeroProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  // PROTOTYPE: ?bg=nebula | ?bg=weather switch alternative hero backdrops.
+  const backdrop = useMemo(backdropFromUrl, []);
   return (
     <section
       id="top"
@@ -32,7 +35,8 @@ export function Hero({ onNavigate, covered }: HeroProps) {
           <HeroScene
             onNavigate={onNavigate}
             showNodes={isDesktop}
-            paused={covered} />
+            paused={covered}
+            backdrop={backdrop} />
 
         </Suspense>
 
