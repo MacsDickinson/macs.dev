@@ -254,8 +254,11 @@ function NavStars({ onNavigate }: { onNavigate: (target: string) => void }) {
 /* The glass name                                                      */
 /* ------------------------------------------------------------------ */
 
-const ROMAN_FONT = '/fonts/fraunces-72-light.typeface.json';
-const ITALIC_FONT = '/fonts/fraunces-72-light-italic.typeface.json';
+// public/ assets referenced by URL don't get Vite's base-path rewriting the
+// way imported assets do — prefix BASE_URL by hand, or the fonts 404 when
+// the site is served from a sub-path (e.g. GitHub Pages project URLs).
+const ROMAN_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light.typeface.json`;
+const ITALIC_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light-italic.typeface.json`;
 
 function GlassName({ reduced }: { reduced: boolean }) {
   const romanFont = useLoader(FontLoader, ROMAN_FONT);
