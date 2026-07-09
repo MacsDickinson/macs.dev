@@ -15,6 +15,8 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { easing } from 'maath';
 import { NavNode, type NavNodeData } from './NavNode';
 import { useMediaQuery } from '../useMediaQuery';
+import { PhotoBackdrop } from './HeroBackdrop';
+import { HERO_GLASS, type GlassConfig } from '../data/heroConfig';
 
 /**
  * The constellation "main level" rendered with three.js:
@@ -260,7 +262,42 @@ function NavStars({ onNavigate }: { onNavigate: (target: string) => void }) {
 const ROMAN_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light.typeface.json`;
 const ITALIC_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light-italic.typeface.json`;
 
-function GlassName({ reduced }: { reduced: boolean }) {
+// Material recipes selectable via HERO_GLASS in heroConfig. roughness =
+// frost, thickness = refraction strength, color = smoke ("opacity" of real
+// glass is its tint — transmission handles the rest). obsidian uses the
+// backside pass: extra glass interfaces against our dark environment are
+// exactly what creates the dark-gloss look.
+const GLASS_MATERIALS = {
+  clear: {
+    thickness: 0.85, roughness: 0.12, color: '#ffffff',
+    chromaticAberration: 0.08, anisotropicBlur: 0.2, samples: 8,
+    clearcoat: 1, clearcoatRoughness: 0.12, backside: false
+  },
+  frosted: {
+    thickness: 0.55, roughness: 0.42, color: '#f2f5fa',
+    chromaticAberration: 0.04, anisotropicBlur: 0.6, samples: 10,
+    clearcoat: 1, clearcoatRoughness: 0.3, backside: false
+  },
+  smoke: {
+    thickness: 1.1, roughness: 0.16, color: '#39404f',
+    chromaticAberration: 0.05, anisotropicBlur: 0.3, samples: 8,
+    clearcoat: 1, clearcoatRoughness: 0.15, backside: false
+  },
+  obsidian: {
+    thickness: 0.7, roughness: 0.09, color: '#e3e9f4',
+    chromaticAberration: 0.03, anisotropicBlur: 0.15, samples: 6,
+    clearcoat: 0.6, clearcoatRoughness: 0.25,
+    backside: true, backsideThickness: 0.2
+  }
+} as const;
+
+function GlassName({
+  reduced,
+  glass
+}: {
+  reduced: boolean;
+  glass: GlassConfig;
+}) {
   const romanFont = useLoader(FontLoader, ROMAN_FONT);
   const italicFont = useLoader(FontLoader, ITALIC_FONT);
   const { viewport } = useThree();
@@ -322,6 +359,13 @@ function GlassName({ reduced }: { reduced: boolean }) {
     viewport.height * 0.46 / height
   );
 
+  const material = {
+    ...GLASS_MATERIALS[glass.preset],
+    ...(glass.roughness !== undefined && { roughness: glass.roughness }),
+    ...(glass.thickness !== undefined && { thickness: glass.thickness }),
+    ...(glass.tint !== undefined && { color: glass.tint })
+  };
+
   return (
     <group ref={tiltRef}>
       <Float
@@ -331,19 +375,10 @@ function GlassName({ reduced }: { reduced: boolean }) {
 
         <mesh geometry={geometry} scale={scale}>
         <MeshTransmissionMaterial
-          backside
-          backsideThickness={0.2}
-          thickness={0.7}
-          samples={6}
+          {...material}
           resolution={512}
           backsideResolution={256}
-          roughness={0.09}
-          ior={1.5}
-          chromaticAberration={0.03}
-          anisotropicBlur={0.15}
-          clearcoat={0.6}
-          clearcoatRoughness={0.25}
-          color="#e3e9f4" />
+          ior={1.5} />
 
         </mesh>
       </Float>
@@ -410,12 +445,12 @@ function LightRig({ reduced }: { reduced: boolean }) {
           cursor, so its reflection sweeps across the glass. */}
       <Environment frames={reduced ? 1 : Infinity} resolution={256}>
         <color attach="background" args={['#05070b']} />
-        {/* Faint base glow so the glass stays just barely readable */}
+        {/* Base glow keeps the glass readable against the photo backdrop */}
         <Lightformer
-          intensity={0.07}
+          intensity={0.45}
           scale={[30, 30, 1]}
           position={[0, 0, -14]}
-          color="#2c3547" />
+          color="#66738c" />
 
         <group ref={envKeyRef} position={[6.5, 5.8, 2.3]}>
           <Lightformer form="rect" intensity={9} scale={[2.2, 11, 1]} color="#ffffff" />
@@ -444,9 +479,16 @@ type HeroSceneProps = {
   showNodes: boolean;
   /** Stop the render loop, e.g. while a section overlay covers the hero. */
   paused?: boolean;
+  /** Backdrop image file from heroConfig's registry/schedule. */
+  imageFile: string;
 };
 
-export function HeroScene({ onNavigate, showNodes, paused }: HeroSceneProps) {
+export function HeroScene({
+  onNavigate,
+  showNodes,
+  paused,
+  imageFile
+}: HeroSceneProps) {
   const reduced = useMediaQuery('(prefers-reduced-motion: reduce)');
   return (
     <Canvas
@@ -456,10 +498,11 @@ export function HeroScene({ onNavigate, showNodes, paused }: HeroSceneProps) {
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}>
 
       <Suspense fallback={null}>
-        {/* Real scene background (matches --field) so the transmission
-            buffer refracts the field colour, not black — this is what keeps
-            the glass "barely there" instead of a dark silhouette. */}
-        <color attach="background" args={['#0e1116']} />
+        {/* Scene background also feeds the transmission buffer — it's what
+            the glass refracts where the photo doesn't cover, so it must be
+            a real colour, never transparent black. */}
+        <color attach="background" args={['#06070b']} />
+        <PhotoBackdrop file={imageFile} />
         {/* Slight tilt so the rotation reads as depth, not a flat spin */}
         <group rotation={[-0.1, 0.05, 0]}>
           <RotatingField reduced={reduced}>
@@ -467,11 +510,12 @@ export function HeroScene({ onNavigate, showNodes, paused }: HeroSceneProps) {
             {showNodes && <NavStars onNavigate={onNavigate} />}
           </RotatingField>
         </group>
-        <GlassName reduced={reduced} />
+        <GlassName reduced={reduced} glass={HERO_GLASS} />
         <LightRig reduced={reduced} />
-        {/* Bloom makes the raking glints ignite while the rest stays dark */}
+        {/* Bloom ignites the cursor-following glints on the glass; the
+            threshold sits high enough that the photo doesn't wash out */}
         <EffectComposer>
-          <Bloom mipmapBlur luminanceThreshold={0.4} intensity={1.2} levels={7} />
+          <Bloom mipmapBlur luminanceThreshold={0.7} intensity={0.7} levels={7} />
         </EffectComposer>
       </Suspense>
     </Canvas>);

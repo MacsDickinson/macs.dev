@@ -20,9 +20,12 @@ deployed to GitHub Pages via GitHub Actions.
 | `src/pages/Home.tsx` | Constellation shell; owns which overlay section is `active` |
 | `src/pages/BlogPost.tsx` | `/blog/:slug` reading view (standalone route) |
 | `src/components/sections/Hero.tsx` | The constellation "main level" — no copy, just the lazy-loaded 3D scene + sr-only `<h1>` + mobile nav pills |
-| `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial), a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only on the home route |
+| `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial — recipes in `GLASS_MATERIALS`), a photoreal JWST backdrop, a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only on the home route |
+| `src/components/HeroBackdrop.tsx` | The photographic backdrop plane (cover-fit, Ken-Burns drift, pointer parallax) |
+| `src/data/heroConfig.ts` | **Hero configuration**: backdrop image registry + per-day schedule, and the glass style (`HERO_GLASS`) |
 | `src/components/NavNode.tsx` | Dot + label button for a nav star; anchored in 3D by `HeroScene` |
 | `public/fonts/*.typeface.json` | Fraunces subsetted to the name's glyphs for the 3D text (see below) |
+| `public/backdrops/*.jpg` | Backdrop photography (JWST releases, CC BY 4.0 — credit renders in the hero corner) |
 | `src/components/SectionOverlay.tsx` | Circle-clip reveal panel that every section renders inside; sets the section accent |
 | `src/components/sections/*` | About, Speaking, Work, Podcast, Writing, BookMe |
 | `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Shared section chrome + scroll-reveal wrapper |
@@ -35,6 +38,14 @@ Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
 
 **Hero scene notes:**
+- **Backdrop & glass are configured in `src/data/heroConfig.ts`**, not in the
+  components. To add an image: drop a ~1920×1200 JPEG (≲1 MB) in
+  `public/backdrops/`, register it in `HERO_IMAGES` with an accurate credit
+  (the CC BY 4.0 credit renders in the hero's bottom-right corner), and
+  optionally pin it to dates via `IMAGE_SCHEDULE` (`'MM-DD'` annual,
+  `'YYYY-MM-DD'` one-off). `HERO_GLASS` picks the name's material preset
+  (clear/frosted/smoke/obsidian) with optional roughness/thickness/tint
+  overrides.
 - The pointer does **not** attract particles — it only steers the direction of
   the off-screen light that reveals the glass name (raking angles glint; a
   frontal light would mirror into the camera and blow the effect out). The
