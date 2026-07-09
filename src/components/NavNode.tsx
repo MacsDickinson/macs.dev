@@ -86,15 +86,24 @@ export function NavNode({ node, onSelect }: NavNodeProps) {
               className="relative h-2.5 w-2.5 rounded-full ring-2 ring-transparent group-focus-visible:ring-white/60 transition-transform group-hover:scale-125"
               style={{
                 background: primary ? 'var(--accent)' : color,
-                boxShadow: `0 0 12px ${primary ? 'var(--accent)' : color}`
+                // Double halo: tight core + wide bleed so the star stays
+                // visible over bright or busy backdrops.
+                boxShadow: `0 0 6px 1px ${primary ? 'var(--accent)' : color}, 0 0 18px 4px ${primary ? 'var(--accent)' : color}55, 0 0 3px rgba(6,8,12,0.9)`
               }} />
             
           </span>
 
-          {/* Label — the shadow keeps it readable over bright backdrops */}
+          {/* Label — dark glass chip keeps it readable over any backdrop */}
           <span
-            style={{ textShadow: '0 1px 10px rgba(8,10,14,0.85)' }}
-            className={`font-mono text-[11px] uppercase tracking-[0.18em] whitespace-nowrap transition-colors ${primary ? 'text-[var(--paper)] font-medium' : 'text-[var(--dim)] group-hover:text-[var(--paper)]'}`}>
+            style={{
+              textShadow: '0 1px 8px rgba(8,10,14,0.9)',
+              background: 'rgba(10,13,18,0.55)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              border: '1px solid rgba(255,255,255,0.09)',
+              padding: '4px 8px'
+            }}
+            className={`font-mono text-[11px] uppercase tracking-[0.18em] whitespace-nowrap transition-colors ${primary ? 'text-[var(--paper)] font-medium' : 'text-[#aeb7c6] group-hover:text-[var(--paper)]'}`}>
             
             {label}
             {primary && <span className="ml-1.5 text-[var(--accent)]">→</span>}

@@ -21,9 +21,11 @@ import {
   PhotoBackdrop,
   WeatherBackdrop,
   getWeatherLook,
+  glassFromUrl,
   photoFromUrl,
   useWeather,
-  type BackdropKind
+  type BackdropKind,
+  type GlassStyle
 } from './HeroBackdrops';
 
 /**
@@ -270,7 +272,42 @@ function NavStars({ onNavigate }: { onNavigate: (target: string) => void }) {
 const ROMAN_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light.typeface.json`;
 const ITALIC_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light-italic.typeface.json`;
 
-function GlassName({ reduced }: { reduced: boolean }) {
+// Material recipes for the ?glass= experiments. roughness = frost,
+// thickness = refraction strength, color = smoke ("opacity" of real glass
+// is its tint — transmission handles the rest). obsidian restores the
+// backside pass: extra glass interfaces against our dark environment are
+// exactly what made the original dark-gloss look.
+const GLASS_MATERIALS = {
+  clear: {
+    thickness: 0.85, roughness: 0.12, color: '#ffffff',
+    chromaticAberration: 0.08, anisotropicBlur: 0.2, samples: 8,
+    clearcoat: 1, clearcoatRoughness: 0.12, backside: false
+  },
+  frosted: {
+    thickness: 0.55, roughness: 0.42, color: '#f2f5fa',
+    chromaticAberration: 0.04, anisotropicBlur: 0.6, samples: 10,
+    clearcoat: 1, clearcoatRoughness: 0.3, backside: false
+  },
+  smoke: {
+    thickness: 1.1, roughness: 0.16, color: '#39404f',
+    chromaticAberration: 0.05, anisotropicBlur: 0.3, samples: 8,
+    clearcoat: 1, clearcoatRoughness: 0.15, backside: false
+  },
+  obsidian: {
+    thickness: 0.7, roughness: 0.09, color: '#e3e9f4',
+    chromaticAberration: 0.03, anisotropicBlur: 0.15, samples: 6,
+    clearcoat: 0.6, clearcoatRoughness: 0.25,
+    backside: true, backsideThickness: 0.2
+  }
+} as const;
+
+function GlassName({
+  reduced,
+  glass
+}: {
+  reduced: boolean;
+  glass: GlassStyle;
+}) {
   const romanFont = useLoader(FontLoader, ROMAN_FONT);
   const italicFont = useLoader(FontLoader, ITALIC_FONT);
   const { viewport } = useThree();
@@ -332,6 +369,13 @@ function GlassName({ reduced }: { reduced: boolean }) {
     viewport.height * 0.46 / height
   );
 
+  const material = {
+    ...GLASS_MATERIALS[glass.preset],
+    ...(glass.roughness !== undefined && { roughness: glass.roughness }),
+    ...(glass.thickness !== undefined && { thickness: glass.thickness }),
+    ...(glass.tint !== undefined && { color: glass.tint })
+  };
+
   return (
     <group ref={tiltRef}>
       <Float
@@ -341,16 +385,10 @@ function GlassName({ reduced }: { reduced: boolean }) {
 
         <mesh geometry={geometry} scale={scale}>
         <MeshTransmissionMaterial
-          thickness={0.85}
-          samples={8}
+          {...material}
           resolution={512}
-          roughness={0.12}
-          ior={1.5}
-          chromaticAberration={0.08}
-          anisotropicBlur={0.2}
-          clearcoat={1}
-          clearcoatRoughness={0.12}
-          color="#ffffff" />
+          backsideResolution={256}
+          ior={1.5} />
 
         </mesh>
       </Float>
@@ -463,6 +501,7 @@ export function HeroScene({
   backdrop = 'space'
 }: HeroSceneProps) {
   const reduced = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const glass = useMemo(glassFromUrl, []);
   const wx = useWeather(backdrop === 'weather');
   const look = wx ? getWeatherLook(wx) : null;
   // Scene background also feeds the transmission buffer — it's what the
@@ -491,7 +530,7 @@ export function HeroScene({
             {showNodes && <NavStars onNavigate={onNavigate} />}
           </RotatingField>
         </group>
-        <GlassName reduced={reduced} />
+        <GlassName reduced={reduced} glass={glass} />
         <LightRig
           reduced={reduced}
           bright={backdrop === 'nebula' || backdrop === 'photo'} />

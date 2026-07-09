@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame, useLoader, useThree } from '@react-three/fiber';
+import { easing } from 'maath';
 
 /**
  * PROTOTYPE hero backdrops, selected with ?bg= on the home route:
@@ -17,6 +18,40 @@ export function backdropFromUrl(): BackdropKind {
   if (typeof window === 'undefined') return 'space';
   const b = new URLSearchParams(window.location.search).get('bg');
   return b === 'nebula' || b === 'weather' || b === 'photo' ? b : 'space';
+}
+
+/* ------------------------------------------------------------------ */
+/* Glass style experiments — ?glass=<preset> plus numeric overrides    */
+/* ------------------------------------------------------------------ */
+
+export type GlassPreset = 'clear' | 'frosted' | 'smoke' | 'obsidian';
+export type GlassStyle = {
+  preset: GlassPreset;
+  /** &rough=0..1 — surface frost. The single most useful knob. */
+  roughness?: number;
+  /** &thick=0..2 — how strongly the letters bend what's behind them. */
+  thickness?: number;
+  /** &tint=rrggbb — glass colour; darker = smokier ("opacity" for glass). */
+  tint?: string;
+};
+
+const GLASS_PRESETS: GlassPreset[] = ['clear', 'frosted', 'smoke', 'obsidian'];
+
+export function glassFromUrl(): GlassStyle {
+  if (typeof window === 'undefined') return { preset: 'clear' };
+  const q = new URLSearchParams(window.location.search);
+  const preset = q.get('glass') as GlassPreset;
+  const num = (key: string, min: number, max: number) => {
+    const v = parseFloat(q.get(key) ?? '');
+    return Number.isFinite(v) ? THREE.MathUtils.clamp(v, min, max) : undefined;
+  };
+  const tintRaw = q.get('tint');
+  return {
+    preset: GLASS_PRESETS.includes(preset) ? preset : 'clear',
+    roughness: num('rough', 0, 1),
+    thickness: num('thick', 0, 2),
+    tint: tintRaw && /^[0-9a-f]{6}$/i.test(tintRaw) ? `#${tintRaw}` : undefined
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -304,28 +339,43 @@ export function PhotoBackdrop({ name }: { name: PhotoName }) {
   );
   texture.colorSpace = THREE.SRGBColorSpace;
   const meshRef = useRef<THREE.Mesh>(null);
-  const { camera } = useThree();
-  const { width: vw, height: vh } = useThree((s) =>
-  s.viewport.getCurrentViewport(camera, new THREE.Vector3(0, 0, PHOTO_Z))
-  );
-  // Cover-fit the image to the viewport at its depth, with margin for drift.
-  const img = texture.image as HTMLImageElement;
-  const aspect = img.width / img.height;
-  let w = vw;
-  let h = w / aspect;
-  if (h < vh) {
-    h = vh;
-    w = h * aspect;
-  }
-  w *= 1.14;
-  h *= 1.14;
-  useFrame((state) => {
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  // `size` only changes on resize — deriving the plane from it keeps the
+  // geometry stable frame-to-frame. (Calling viewport.getCurrentViewport in
+  // a selector returned a fresh object every store update, re-rendering and
+  // rebuilding the plane whenever the pointer moved — the "jumpy" glitch.)
+  const size = useThree((s) => s.size);
+  const { w, h } = useMemo(() => {
+    const dist = camera.position.z - PHOTO_Z;
+    const vh = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * dist;
+    const vw = vh * (size.width / size.height);
+    const img = texture.image as HTMLImageElement;
+    const aspect = img.width / img.height;
+    // Cover-fit at the plane's depth, with margin for drift + parallax.
+    let w = vw;
+    let h = w / aspect;
+    if (h < vh) {
+      h = vh;
+      w = h * aspect;
+    }
+    return { w: w * 1.14, h: h * 1.14 };
+  }, [camera, size, texture]);
+  useFrame((state, delta) => {
     const m = meshRef.current;
     if (!m) return;
     const t = state.clock.elapsedTime;
-    // Ken-Burns style drift plus a whisper of parallax opposite the cursor.
-    m.position.x = Math.sin(t * 0.02) * (w * 0.02) - state.pointer.x * w * 0.012;
-    m.position.y = Math.cos(t * 0.016) * (h * 0.015) - state.pointer.y * h * 0.012;
+    // Ken-Burns style drift plus a whisper of parallax opposite the cursor,
+    // damped so neither pointer jumps nor re-renders can make the image snap.
+    easing.damp3(
+      m.position,
+      [
+      Math.sin(t * 0.02) * (w * 0.02) - state.pointer.x * w * 0.012,
+      Math.cos(t * 0.016) * (h * 0.015) - state.pointer.y * h * 0.012,
+      PHOTO_Z],
+
+      0.8,
+      delta
+    );
   });
   return (
     <mesh ref={meshRef} position={[0, 0, PHOTO_Z]}>
