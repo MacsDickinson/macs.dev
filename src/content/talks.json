@@ -1,6 +1,6 @@
 [
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "md-fintech-26-building-a-modern-bank",
     "title": "Building a Modern Bank",
     "venue": "MD Fintech 26, Manchester Digital",
@@ -9,7 +9,7 @@
     "link": "https://www.slideshare.net/slideshow/building-a-modern-bank-manchester-digital-fintech-26/288446938"
   },
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "wrk-digital-2026",
     "title": "Leading Through the Noise: Making AI Stick in Engineering Teams",
     "venue": "Wrk Digital: Leadership",
@@ -27,7 +27,7 @@
     "link": "https://confluxhq.com/all-success-stories/nimble-scaling-lhv-bank-accelerates-value-flow-and-strategic-alignment-through-team-topologies"
   },
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "open-banking-expo-2025-ai-data-automation",
     "title": "AI, Data & Automation: Redefining the Customer Experience",
     "venue": "Open Banking Expo 2025",
@@ -62,7 +62,7 @@
     "description": "Panel discussion on how people can be both the catalyst and the biggest obstacle to enacting organisational change."
   },
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "youequaltech-2023-cognitive-empathy",
     "title": "Leading with Cognitive Empathy",
     "venue": "YouEqualTech, Birmingham",
@@ -71,7 +71,7 @@
     "link": "https://www.slideshare.net/slideshow/leading-with-cognitive-empathy-youequaltech-birmingham/288446978"
   },
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "wrk-digital-meetup-2023-neurodiversity",
     "title": "Demystifying Neurodiversity for Engineering Leaders",
     "venue": "WRK Digital Meetup, xDesign HQ Leeds",
@@ -87,7 +87,7 @@
     "description": "Panel with Cassy Calvert, Rebecca Fitzgerald, Paul Durkan and Ngaire Guzzetti debating the build vs buy vs outsource question for software delivery leaders."
   },
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "react-context-api-techedge-2019-macs-dickinson",
     "title": "React Context API – Do You Really Need Redux?",
     "venue": "TechEdge",
@@ -96,7 +96,7 @@
     "link": "https://www.youtube.com/watch?v=3gEs8ITZZO8"
   },
   {
-    "type": "Talk",
+    "type": "Keynote",
     "slug": "ddd-north-2015-react-for-net-developers",
     "title": "React for .NET Developers",
     "venue": "DDD North 2015",

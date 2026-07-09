@@ -2,7 +2,7 @@ import React, { Suspense, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { PROFILE } from '../../data/content';
 import { useMediaQuery } from '../../useMediaQuery';
-import { backdropFromUrl } from '../HeroBackdrops';
+import { heroImageForDate } from '../../data/heroConfig';
 
 // three.js + the scene are heavy — split them out so blog routes stay light.
 const HeroScene = React.lazy(() =>
@@ -17,8 +17,8 @@ type HeroProps = {
 
 export function Hero({ onNavigate, covered }: HeroProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  // PROTOTYPE: ?bg=nebula | ?bg=weather switch alternative hero backdrops.
-  const backdrop = useMemo(backdropFromUrl, []);
+  // Backdrop image comes from the registry + date schedule in heroConfig.
+  const image = useMemo(() => heroImageForDate(), []);
   return (
     <section
       id="top"
@@ -36,7 +36,7 @@ export function Hero({ onNavigate, covered }: HeroProps) {
             onNavigate={onNavigate}
             showNodes={isDesktop}
             paused={covered}
-            backdrop={backdrop} />
+            imageFile={image.file} />
 
         </Suspense>
 
@@ -54,6 +54,11 @@ export function Hero({ onNavigate, covered }: HeroProps) {
       {/* The name lives in the canvas as glass — keep it in the document for
           screen readers and search engines. */}
       <h1 className="sr-only">{PROFILE.name}</h1>
+
+      {/* Image credit — the JWST releases are CC BY 4.0, attribution required */}
+      <p className="pointer-events-none absolute bottom-2 right-3 z-10 hidden font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--dim)]/50 md:block">
+        {image.credit}
+      </p>
 
       {/* Mobile: node targets as tappable pills (nav stars are desktop-only) */}
       <motion.div

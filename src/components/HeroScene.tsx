@@ -15,18 +15,8 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { easing } from 'maath';
 import { NavNode, type NavNodeData } from './NavNode';
 import { useMediaQuery } from '../useMediaQuery';
-import {
-  NameBacklight,
-  NebulaBackdrop,
-  PhotoBackdrop,
-  WeatherBackdrop,
-  getWeatherLook,
-  glassFromUrl,
-  photoFromUrl,
-  useWeather,
-  type BackdropKind,
-  type GlassStyle
-} from './HeroBackdrops';
+import { PhotoBackdrop } from './HeroBackdrop';
+import { HERO_GLASS, type GlassConfig } from '../data/heroConfig';
 
 /**
  * The constellation "main level" rendered with three.js:
@@ -272,11 +262,11 @@ function NavStars({ onNavigate }: { onNavigate: (target: string) => void }) {
 const ROMAN_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light.typeface.json`;
 const ITALIC_FONT = `${import.meta.env.BASE_URL}fonts/fraunces-72-light-italic.typeface.json`;
 
-// Material recipes for the ?glass= experiments. roughness = frost,
-// thickness = refraction strength, color = smoke ("opacity" of real glass
-// is its tint — transmission handles the rest). obsidian restores the
+// Material recipes selectable via HERO_GLASS in heroConfig. roughness =
+// frost, thickness = refraction strength, color = smoke ("opacity" of real
+// glass is its tint — transmission handles the rest). obsidian uses the
 // backside pass: extra glass interfaces against our dark environment are
-// exactly what made the original dark-gloss look.
+// exactly what creates the dark-gloss look.
 const GLASS_MATERIALS = {
   clear: {
     thickness: 0.85, roughness: 0.12, color: '#ffffff',
@@ -306,7 +296,7 @@ function GlassName({
   glass
 }: {
   reduced: boolean;
-  glass: GlassStyle;
+  glass: GlassConfig;
 }) {
   const romanFont = useLoader(FontLoader, ROMAN_FONT);
   const italicFont = useLoader(FontLoader, ITALIC_FONT);
@@ -406,7 +396,7 @@ function GlassName({
 // whole face up.
 const LIGHT_ELEVATION = 0.24;
 
-function LightRig({ reduced, bright }: { reduced: boolean; bright?: boolean }) {
+function LightRig({ reduced }: { reduced: boolean }) {
   // The light's direction is tracked as an angle around the screen rim, and
   // damped as an angle: when the cursor crosses the middle the light slides
   // *around* the rim instead of lerping through the centre (which would pass
@@ -455,13 +445,12 @@ function LightRig({ reduced, bright }: { reduced: boolean; bright?: boolean }) {
           cursor, so its reflection sweeps across the glass. */}
       <Environment frames={reduced ? 1 : Infinity} resolution={256}>
         <color attach="background" args={['#05070b']} />
-        {/* Base glow: faint in deep space, lifted on the brighter backdrops
-            so the glass reads as clear glass rather than a dark silhouette */}
+        {/* Base glow keeps the glass readable against the photo backdrop */}
         <Lightformer
-          intensity={bright ? 0.45 : 0.07}
+          intensity={0.45}
           scale={[30, 30, 1]}
           position={[0, 0, -14]}
-          color={bright ? '#66738c' : '#2c3547'} />
+          color="#66738c" />
 
         <group ref={envKeyRef} position={[6.5, 5.8, 2.3]}>
           <Lightformer form="rect" intensity={9} scale={[2.2, 11, 1]} color="#ffffff" />
@@ -490,26 +479,17 @@ type HeroSceneProps = {
   showNodes: boolean;
   /** Stop the render loop, e.g. while a section overlay covers the hero. */
   paused?: boolean;
-  /** PROTOTYPE: alternative backdrops, selected via ?bg= (see HeroBackdrops). */
-  backdrop?: BackdropKind;
+  /** Backdrop image file from heroConfig's registry/schedule. */
+  imageFile: string;
 };
 
 export function HeroScene({
   onNavigate,
   showNodes,
   paused,
-  backdrop = 'space'
+  imageFile
 }: HeroSceneProps) {
   const reduced = useMediaQuery('(prefers-reduced-motion: reduce)');
-  const glass = useMemo(glassFromUrl, []);
-  const wx = useWeather(backdrop === 'weather');
-  const look = wx ? getWeatherLook(wx) : null;
-  // Scene background also feeds the transmission buffer — it's what the
-  // glass refracts, so it must be a real colour, never transparent black.
-  const background = look ? look.bg : backdrop === 'nebula' ? '#131826' : '#0e1116';
-  const showStars = look ? look.starry : true;
-  const bloomThreshold = look ? look.bloomThreshold : backdrop === 'photo' ? 0.7 : 0.4;
-  const bloomIntensity = look ? look.bloomIntensity : backdrop === 'photo' ? 0.7 : 1.2;
   return (
     <Canvas
       frameloop={paused ? 'never' : 'always'}
@@ -518,32 +498,24 @@ export function HeroScene({
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}>
 
       <Suspense fallback={null}>
-        <color attach="background" args={[background]} />
-        {look && <WeatherBackdrop wx={wx!} />}
-        {backdrop === 'photo' && <PhotoBackdrop name={photoFromUrl()} />}
-        {backdrop === 'nebula' && <NameBacklight />}
+        {/* Scene background also feeds the transmission buffer — it's what
+            the glass refracts where the photo doesn't cover, so it must be
+            a real colour, never transparent black. */}
+        <color attach="background" args={['#06070b']} />
+        <PhotoBackdrop file={imageFile} />
         {/* Slight tilt so the rotation reads as depth, not a flat spin */}
         <group rotation={[-0.1, 0.05, 0]}>
           <RotatingField reduced={reduced}>
-            {backdrop === 'nebula' && <NebulaBackdrop />}
-            {showStars && <Starfield />}
+            <Starfield />
             {showNodes && <NavStars onNavigate={onNavigate} />}
           </RotatingField>
         </group>
-        <GlassName reduced={reduced} glass={glass} />
-        <LightRig
-          reduced={reduced}
-          bright={backdrop === 'nebula' || backdrop === 'photo'} />
-
-        {/* Bloom makes the raking glints ignite while the rest stays dark;
-            bright backdrops raise the threshold so they don't wash out */}
+        <GlassName reduced={reduced} glass={HERO_GLASS} />
+        <LightRig reduced={reduced} />
+        {/* Bloom ignites the cursor-following glints on the glass; the
+            threshold sits high enough that the photo doesn't wash out */}
         <EffectComposer>
-          <Bloom
-            mipmapBlur
-            luminanceThreshold={bloomThreshold}
-            intensity={bloomIntensity}
-            levels={7} />
-
+          <Bloom mipmapBlur luminanceThreshold={0.7} intensity={0.7} levels={7} />
         </EffectComposer>
       </Suspense>
     </Canvas>);
