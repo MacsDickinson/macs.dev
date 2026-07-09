@@ -16,9 +16,12 @@ import { easing } from 'maath';
 import { NavNode, type NavNodeData } from './NavNode';
 import { useMediaQuery } from '../useMediaQuery';
 import {
+  NameBacklight,
   NebulaBackdrop,
+  PhotoBackdrop,
   WeatherBackdrop,
   getWeatherLook,
+  photoFromUrl,
   useWeather,
   type BackdropKind
 } from './HeroBackdrops';
@@ -338,19 +341,16 @@ function GlassName({ reduced }: { reduced: boolean }) {
 
         <mesh geometry={geometry} scale={scale}>
         <MeshTransmissionMaterial
-          backside
-          backsideThickness={0.2}
-          thickness={0.7}
-          samples={6}
+          thickness={0.85}
+          samples={8}
           resolution={512}
-          backsideResolution={256}
-          roughness={0.09}
+          roughness={0.12}
           ior={1.5}
-          chromaticAberration={0.03}
-          anisotropicBlur={0.15}
-          clearcoat={0.6}
-          clearcoatRoughness={0.25}
-          color="#e3e9f4" />
+          chromaticAberration={0.08}
+          anisotropicBlur={0.2}
+          clearcoat={1}
+          clearcoatRoughness={0.12}
+          color="#ffffff" />
 
         </mesh>
       </Float>
@@ -368,7 +368,7 @@ function GlassName({ reduced }: { reduced: boolean }) {
 // whole face up.
 const LIGHT_ELEVATION = 0.24;
 
-function LightRig({ reduced }: { reduced: boolean }) {
+function LightRig({ reduced, bright }: { reduced: boolean; bright?: boolean }) {
   // The light's direction is tracked as an angle around the screen rim, and
   // damped as an angle: when the cursor crosses the middle the light slides
   // *around* the rim instead of lerping through the centre (which would pass
@@ -417,12 +417,13 @@ function LightRig({ reduced }: { reduced: boolean }) {
           cursor, so its reflection sweeps across the glass. */}
       <Environment frames={reduced ? 1 : Infinity} resolution={256}>
         <color attach="background" args={['#05070b']} />
-        {/* Faint base glow so the glass stays just barely readable */}
+        {/* Base glow: faint in deep space, lifted on the brighter backdrops
+            so the glass reads as clear glass rather than a dark silhouette */}
         <Lightformer
-          intensity={0.07}
+          intensity={bright ? 0.45 : 0.07}
           scale={[30, 30, 1]}
           position={[0, 0, -14]}
-          color="#2c3547" />
+          color={bright ? '#66738c' : '#2c3547'} />
 
         <group ref={envKeyRef} position={[6.5, 5.8, 2.3]}>
           <Lightformer form="rect" intensity={9} scale={[2.2, 11, 1]} color="#ffffff" />
@@ -468,6 +469,8 @@ export function HeroScene({
   // glass refracts, so it must be a real colour, never transparent black.
   const background = look ? look.bg : backdrop === 'nebula' ? '#131826' : '#0e1116';
   const showStars = look ? look.starry : true;
+  const bloomThreshold = look ? look.bloomThreshold : backdrop === 'photo' ? 0.7 : 0.4;
+  const bloomIntensity = look ? look.bloomIntensity : backdrop === 'photo' ? 0.7 : 1.2;
   return (
     <Canvas
       frameloop={paused ? 'never' : 'always'}
@@ -478,6 +481,8 @@ export function HeroScene({
       <Suspense fallback={null}>
         <color attach="background" args={[background]} />
         {look && <WeatherBackdrop wx={wx!} />}
+        {backdrop === 'photo' && <PhotoBackdrop name={photoFromUrl()} />}
+        {backdrop === 'nebula' && <NameBacklight />}
         {/* Slight tilt so the rotation reads as depth, not a flat spin */}
         <group rotation={[-0.1, 0.05, 0]}>
           <RotatingField reduced={reduced}>
@@ -487,14 +492,17 @@ export function HeroScene({
           </RotatingField>
         </group>
         <GlassName reduced={reduced} />
-        <LightRig reduced={reduced} />
+        <LightRig
+          reduced={reduced}
+          bright={backdrop === 'nebula' || backdrop === 'photo'} />
+
         {/* Bloom makes the raking glints ignite while the rest stays dark;
-            bright weather skies raise the threshold so they don't wash out */}
+            bright backdrops raise the threshold so they don't wash out */}
         <EffectComposer>
           <Bloom
             mipmapBlur
-            luminanceThreshold={look ? look.bloomThreshold : 0.4}
-            intensity={look ? look.bloomIntensity : 1.2}
+            luminanceThreshold={bloomThreshold}
+            intensity={bloomIntensity}
             levels={7} />
 
         </EffectComposer>

@@ -1,21 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader, useThree } from '@react-three/fiber';
 
 /**
  * PROTOTYPE hero backdrops, selected with ?bg= on the home route:
  *   ?bg=nebula   — dense galactic band + space-cloud hues behind the name
+ *   ?bg=photo    — photoreal JWST imagery (&img=carina|pillars|tarantula)
  *   ?bg=weather  — sky driven by live local weather + season (Open-Meteo via
  *                  IP geolocation). Force a look with &wx=<kind>-<day|night>,
  *                  e.g. ?bg=weather&wx=rain-night, wx=snow-day, wx=clear-day.
  */
 
-export type BackdropKind = 'space' | 'nebula' | 'weather';
+export type BackdropKind = 'space' | 'nebula' | 'weather' | 'photo';
 
 export function backdropFromUrl(): BackdropKind {
   if (typeof window === 'undefined') return 'space';
   const b = new URLSearchParams(window.location.search).get('bg');
-  return b === 'nebula' || b === 'weather' ? b : 'space';
+  return b === 'nebula' || b === 'weather' || b === 'photo' ? b : 'space';
 }
 
 /* ------------------------------------------------------------------ */
@@ -235,6 +236,102 @@ export function NebulaBackdrop() {
 
       </points>
     </>);
+
+}
+
+/** Soft luminous glow straight behind the name — gives the transmission
+ *  material something bright to refract, which is what makes the glass read
+ *  as *clear* glass instead of a dark obelisk. */
+export function NameBacklight({
+  color = '#93a7d6',
+  opacity = 0.32
+}: {
+  color?: string;
+  opacity?: number;
+}) {
+  const halo = useMemo(() => {
+    // Softer falloff than makeSoftDotTexture so it reads as a glow, not a blob.
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const ctx = c.getContext('2d')!;
+    const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+    g.addColorStop(0, 'rgba(255,255,255,0.85)');
+    g.addColorStop(0.25, 'rgba(255,255,255,0.35)');
+    g.addColorStop(0.55, 'rgba(255,255,255,0.1)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    return new THREE.CanvasTexture(c);
+  }, []);
+  useEffect(() => () => halo.dispose(), [halo]);
+  return (
+    <sprite position={[0, -0.5, -16]} scale={[26, 15, 1]}>
+      <spriteMaterial
+        map={halo}
+        transparent
+        opacity={opacity}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        color={color} />
+
+    </sprite>);
+
+}
+
+/* ------------------------------------------------------------------ */
+/* Prototype C — photoreal JWST imagery                                */
+/* ------------------------------------------------------------------ */
+
+// Self-hosted crops of ESA/Webb releases (NASA, ESA, CSA, STScI — CC BY 4.0):
+// carina = Cosmic Cliffs (weic2205a), pillars = Pillars of Creation
+// (weic2216a), tarantula = Tarantula Nebula (weic2212a).
+const PHOTOS = ['carina', 'pillars', 'tarantula'] as const;
+export type PhotoName = (typeof PHOTOS)[number];
+
+export function photoFromUrl(): PhotoName {
+  if (typeof window === 'undefined') return 'carina';
+  const p = new URLSearchParams(window.location.search).get('img');
+  return PHOTOS.includes(p as PhotoName) ? p as PhotoName : 'carina';
+}
+
+const PHOTO_Z = -45;
+
+/** Full-bleed photographic plane with a slow drift + pointer parallax. */
+export function PhotoBackdrop({ name }: { name: PhotoName }) {
+  const texture = useLoader(
+    THREE.TextureLoader,
+    `${import.meta.env.BASE_URL}backdrops/${name}.jpg`
+  );
+  texture.colorSpace = THREE.SRGBColorSpace;
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { camera } = useThree();
+  const { width: vw, height: vh } = useThree((s) =>
+  s.viewport.getCurrentViewport(camera, new THREE.Vector3(0, 0, PHOTO_Z))
+  );
+  // Cover-fit the image to the viewport at its depth, with margin for drift.
+  const img = texture.image as HTMLImageElement;
+  const aspect = img.width / img.height;
+  let w = vw;
+  let h = w / aspect;
+  if (h < vh) {
+    h = vh;
+    w = h * aspect;
+  }
+  w *= 1.14;
+  h *= 1.14;
+  useFrame((state) => {
+    const m = meshRef.current;
+    if (!m) return;
+    const t = state.clock.elapsedTime;
+    // Ken-Burns style drift plus a whisper of parallax opposite the cursor.
+    m.position.x = Math.sin(t * 0.02) * (w * 0.02) - state.pointer.x * w * 0.012;
+    m.position.y = Math.cos(t * 0.016) * (h * 0.015) - state.pointer.y * h * 0.012;
+  });
+  return (
+    <mesh ref={meshRef} position={[0, 0, PHOTO_Z]}>
+      <planeGeometry args={[w, h]} />
+      <meshBasicMaterial map={texture} depthWrite={false} toneMapped={false} />
+    </mesh>);
 
 }
 
