@@ -38,11 +38,12 @@ deployed to GitHub Pages via GitHub Actions.
 Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
 
-The blog is a historic archive of Macs's LinkedIn posts, dated to their
-original publish dates. Drop a file into `src/content/posts/` and it's live
-(`src/data/content.ts` globs the folder). Name files `yyyy-MM-dd-title.md` —
-the date prefix keeps the folder sorted, doubles as the date if frontmatter
-omits one, and is stripped from the URL (`/blog/<title>`):
+The blog is a historic archive — Macs's LinkedIn posts plus his original
+2013–2015 .NET/Nancy-era blog — dated to their original publish dates. Drop a
+file into `src/content/posts/` and it's live (`src/data/content.ts` globs the
+folder). Name files `yyyy-MM-dd-title.md` — the date prefix keeps the folder
+sorted, doubles as the date if frontmatter omits one, and is stripped from the
+URL (`/blog/<title>`):
 
 - **`*.md`** — markdown with a `---` frontmatter block, rendered by
   react-markdown into the `.post-prose` styles in `index.css`.
@@ -56,8 +57,16 @@ omits one, and is stripped from the URL (`/blog/<title>`):
 - Frontmatter: `title`, `excerpt`, `date` (YYYY-MM-DD), `tag`, plus optional
   `featured: true` (pins to the featured cards at the top of Writing; the
   rest render as a dated archive list), `linkedin: <url>` (renders an
-  "Originally posted on LinkedIn" source link), and `readingTime` (computed
+  "Originally posted on LinkedIn" source link), `draft: true` (keeps the post
+  off the site entirely — for unfinished pieces), and `readingTime` (computed
   from word count if omitted).
+- Post images live in `public/img/`; reference them root-relative in markdown
+  (`![alt](/img/foo.png)`). `BlogPost.tsx` prefixes such `/…` URLs with
+  `import.meta.env.BASE_URL` so they resolve under the `/macs.dev/` Pages base
+  — never hardcode `/macs.dev/` yourself. Filenames on a case-insensitive
+  macOS filesystem: when bulk-renaming posts, move via a temp name (write new,
+  remove old, `os.replace`) — a case-only rename like `Foo.md`→`foo.md` is the
+  *same inode*, so "write new then delete old" deletes the file you just wrote.
 
 **Hero scene notes:**
 - **Backdrop & glass are configured in `src/data/heroConfig.ts`**, not in the
