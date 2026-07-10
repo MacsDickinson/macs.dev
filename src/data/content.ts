@@ -44,7 +44,10 @@ export type BlogPost = {
   date: string;
   readingTime: string;
   tag: string;
-  body: string[];
+  featured?: boolean; // pinned to the featured cards at the top of Writing
+  linkedin?: string; // original LinkedIn post, when the piece started life there
+  kind: 'markdown' | 'html';
+  content: string; // markdown source, or the html document/fragment
 };
 
 export type PodcastEpisode = {
@@ -77,13 +80,103 @@ export const TALKS: Talk[] = talksJson as Talk[];
 export const WORK: WorkRole[] = workJson;
 export const PODCASTS: PodcastEpisode[] = podcastsJson;
 
-// Each post is its own file — drop a new JSON file into `src/content/posts/`
-// and it appears on the site, newest first.
-const postModules = import.meta.glob<BlogPost>('../content/posts/*.json', {
+// ---------------------------------------------------------------------------
+// Blog posts. Each post is its own file in `src/content/posts/` — drop one in
+// and it appears on the site, newest first. Two formats:
+//
+//   *.md    — markdown with a `---` YAML-style frontmatter block
+//   *.html  — a standalone interactive post; frontmatter lives in a leading
+//             `<!-- ... -->` comment. Fragments are wrapped in the site's
+//             design tokens; full documents (with an <html> tag) are used
+//             verbatim. Rendered in a sandboxed-by-structure iframe by
+//             BlogPost.tsx.
+//
+// Files starting with `_` (e.g. `_template.md`) are authoring templates and
+// are skipped. Frontmatter fields: title, excerpt, date (YYYY-MM-DD), tag,
+// and optionally featured, linkedin, readingTime (computed if omitted).
+// ---------------------------------------------------------------------------
+
+type PostMeta = Record<string, string | boolean>;
+
+// Parses simple `key: value` lines. Values may be bare or quoted; `true` and
+// `false` become booleans. Deliberately not full YAML — keep frontmatter flat.
+function parseMeta(block: string): PostMeta {
+  const meta: PostMeta = {};
+  for (const line of block.split('\n')) {
+    const match = line.match(/^(\w+):\s*(.*)$/);
+    if (!match) continue;
+    let value = match[2].trim();
+    if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'")))
+
+    value = value.slice(1, -1);
+    meta[match[1]] = value === 'true' ? true : value === 'false' ? false : value;
+  }
+  return meta;
+}
+
+function estimateReadingTime(text: string): string {
+  const plain = text.
+  replace(/<[^>]+>/g, ' ') // html tags
+  .replace(/[#>*`_[\]()!-]/g, ' '); // markdown punctuation
+  const words = plain.split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 220))} min read`;
+}
+
+function slugFromPath(path: string): string {
+  const name = path.split('/').pop() ?? path;
+  return name.replace(/\.(md|html)$/, '');
+}
+
+function toPost(path: string, raw: string, kind: BlogPost['kind']): BlogPost | null {
+  const slug = slugFromPath(path);
+  if (slug.startsWith('_')) return null; // authoring templates
+  let meta: PostMeta = {};
+  let content = raw;
+  if (kind === 'markdown') {
+    const match = raw.match(/^---\n([\s\S]*?)\n---\n?/);
+    if (match) {
+      meta = parseMeta(match[1]);
+      content = raw.slice(match[0].length);
+    }
+  } else {
+    const match = raw.match(/^\s*<!--([\s\S]*?)-->\s*/);
+    if (match) {
+      meta = parseMeta(match[1]);
+      content = raw.slice(match[0].length);
+    }
+  }
+  return {
+    slug,
+    title: String(meta.title ?? slug),
+    excerpt: String(meta.excerpt ?? ''),
+    date: String(meta.date ?? ''),
+    readingTime: String(meta.readingTime ?? estimateReadingTime(content)),
+    tag: String(meta.tag ?? 'Notes'),
+    featured: meta.featured === true,
+    linkedin: typeof meta.linkedin === 'string' ? meta.linkedin : undefined,
+    kind,
+    content
+  };
+}
+
+const mdModules = import.meta.glob<string>('../content/posts/*.md', {
   eager: true,
+  query: '?raw',
+  import: 'default'
+});
+const htmlModules = import.meta.glob<string>('../content/posts/*.html', {
+  eager: true,
+  query: '?raw',
   import: 'default'
 });
 
-export const BLOG_POSTS: BlogPost[] = Object.values(postModules).sort((a, b) =>
-b.date.localeCompare(a.date)
-);
+export const BLOG_POSTS: BlogPost[] = [
+...Object.entries(mdModules).map(([path, raw]) =>
+toPost(path, raw, 'markdown')
+),
+...Object.entries(htmlModules).map(([path, raw]) => toPost(path, raw, 'html'))].
+
+filter((post): post is BlogPost => post !== null).
+sort((a, b) => b.date.localeCompare(a.date));

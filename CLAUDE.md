@@ -29,13 +29,33 @@ deployed to GitHub Pages via GitHub Actions.
 | `src/components/SectionOverlay.tsx` | Circle-clip reveal panel that every section renders inside; sets the section accent |
 | `src/components/sections/*` | About, Speaking, Work, Podcast, Writing, BookMe |
 | `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Shared section chrome + scroll-reveal wrapper |
-| `src/content/*.json`, `src/content/posts/*.json` | **All copy** — edit JSON, never hard-code text in components |
+| `src/content/*.json` | **All section copy** — edit JSON, never hard-code text in components |
+| `src/content/posts/*.md`, `*.html` | **Blog posts** — markdown or standalone interactive HTML (see below) |
 | `src/data/content.ts` | Typed loader for the JSON; add fields to the types here |
 | `src/canvas.manifest.js` | Screen registry — powers `?mp_screen=` deep links (see Verifying) |
 | `src/index.css` | Design tokens + the Signal Deck system (below) |
 
 Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
+
+The blog is a historic archive of Macs's LinkedIn posts, dated to their
+original publish dates. Drop a file into `src/content/posts/` and it's live
+(`src/data/content.ts` globs the folder; filename = slug = `/blog/<slug>`):
+
+- **`*.md`** — markdown with a `---` frontmatter block, rendered by
+  react-markdown into the `.post-prose` styles in `index.css`.
+- **`*.html`** — standalone interactive/immersive posts; frontmatter lives in
+  a leading `<!-- -->` comment. `BlogPost.tsx` renders them in an
+  auto-resizing iframe: *fragments* get wrapped in the Signal Deck tokens +
+  fonts (authors can use `var(--surface)`, `var(--ac)`, `.font-display`…);
+  *full documents* (real `<html>` tag) are used verbatim.
+- Files starting with `_` are skipped — `_template.md` / `_template.html`
+  are copy-me starting points documenting the frontmatter.
+- Frontmatter: `title`, `excerpt`, `date` (YYYY-MM-DD), `tag`, plus optional
+  `featured: true` (pins to the featured cards at the top of Writing; the
+  rest render as a dated archive list), `linkedin: <url>` (renders an
+  "Originally posted on LinkedIn" source link), and `readingTime` (computed
+  from word count if omitted).
 
 **Hero scene notes:**
 - **Backdrop & glass are configured in `src/data/heroConfig.ts`**, not in the
