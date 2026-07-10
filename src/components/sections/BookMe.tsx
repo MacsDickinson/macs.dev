@@ -86,7 +86,7 @@ export function BookMe() {
           organisation: form.organisation,
           topic: form.topic,
           message: form.message,
-          _subject: `macs.dev enquiry — ${form.topic} — ${form.name}`,
+          _subject: `macs.dev enquiry - ${form.topic} - ${form.name}`,
           _template: 'table',
           _replyto: form.email
         })
@@ -163,7 +163,7 @@ export function BookMe() {
                       Message sent.
                     </h3>
                     <p className="text-[var(--text-soft)] max-w-sm">
-                      Thanks for reaching out — I&apos;ll be in touch within a
+                      Thanks for reaching out. I&apos;ll be in touch within a
                       few days to talk details.
                     </p>
                     <button
@@ -279,7 +279,7 @@ export function BookMe() {
 
                     {status === 'error' &&
                   <p className="text-sm text-[var(--text-soft)]">
-                        Something went wrong sending that — please try again,
+                        Something went wrong sending that. Please try again,
                         or email me directly at{' '}
                         <a
                       href={`mailto:${PROFILE.email}`}

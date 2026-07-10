@@ -14,12 +14,15 @@ When build time compresses that dramatically, the bottleneck doesn't disappear. 
 
 What I'm seeing in practice: teams adopt AI coding tools, productivity spikes, then plateaus. Why? Because the new bottleneck isn't build. It's requirements clarity.
 
-You can generate code in fifteen minutes. But if the spec is ambiguous, you just get wrong code in fifteen minutes.
+You can generate code in 15 minutes. But if the spec is ambiguous, you just get wrong code in 15 minutes.
 
-The shift is this: the cost of being wrong drops dramatically, because it's cheap to rebuild. The cost of being unclear stays exactly the same, because it's still expensive to discover after the build.
+The shift:
 
-The teams sustaining velocity gains aren't the ones with the best AI prompts. They're the ones who already had tight discovery loops, lean practices and automated pipelines. AI didn't give them that. It amplified it.
+- Cost of being wrong → drops dramatically (cheap to rebuild)
+- Cost of being unclear → stays the same (expensive to discover post-build)
+
+The teams sustaining velocity gains aren't the ones with the best AI prompts. They're the ones who already had tight discovery loops. Lean practices. Automated pipelines. AI didn't give them that, it amplified it.
 
 Which means if you couldn't ship at speed before, you won't now. You'll just reach the next bottleneck faster.
 
-AI didn't break your process. It just made it visible. That's actually useful — if you're paying attention.
+AI didn't break your process. It just made it visible. That's actually useful if you're paying attention.

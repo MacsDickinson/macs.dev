@@ -5,7 +5,7 @@
     "title": "Building a Modern Bank",
     "venue": "MD Fintech 26, Manchester Digital",
     "date": "Jun 2026",
-    "description": "What it takes to build a modern bank — the engineering, architecture and culture choices behind LHV Bank's platform.",
+    "description": "What it takes to build a modern bank: the engineering, architecture and culture choices behind LHV Bank's platform.",
     "link": "https://www.slideshare.net/slideshow/building-a-modern-bank-manchester-digital-fintech-26/288446938"
   },
   {
@@ -14,7 +14,7 @@
     "title": "Leading Through the Noise: Making AI Stick in Engineering Teams",
     "venue": "Wrk Digital: Leadership",
     "date": "Mar 2026",
-    "description": "AI is moving faster than most engineering organisations can track. How leaders can cut through the noise and drive adoption that actually sticks — through culture, experimentation and clear decisions.",
+    "description": "AI is moving faster than most engineering organisations can track. How leaders can cut through the noise and drive adoption that actually sticks, through culture, experimentation and clear decisions.",
     "link": "https://www.slideshare.net/slideshow/leading-through-the-noise-wrk-digital/288447043"
   },
   {
@@ -23,7 +23,7 @@
     "title": "Nimble scaling: LHV Bank accelerates value flow and strategic alignment through Team Topologies",
     "venue": "Conflux Case Study",
     "date": "Dec 2025",
-    "description": "How we restructured LHV Bank's engineering organisation for flow using Team Topologies — hands-on workshops, captured as a Conflux case study.",
+    "description": "How we restructured LHV Bank's engineering organisation for flow using Team Topologies. Hands-on workshops, captured as a Conflux case study.",
     "link": "https://confluxhq.com/all-success-stories/nimble-scaling-lhv-bank-accelerates-value-flow-and-strategic-alignment-through-team-topologies"
   },
   {
@@ -50,7 +50,7 @@
     "title": "Scaling Panel Discussion",
     "venue": "FinTech North Leeds Conference 2024",
     "date": "22 May 2024",
-    "description": "Panel on scaling fintechs, chaired by Julia Streets — growth strategies and the problems that come with them.",
+    "description": "Panel on scaling fintechs, chaired by Julia Streets, covering growth strategies and the problems that come with them.",
     "link": "https://www.fintechnorth.uk/events/leeds-conference-2024/"
   },
   {
@@ -67,7 +67,7 @@
     "title": "Leading with Cognitive Empathy",
     "venue": "YouEqualTech, Birmingham",
     "date": "6 Jul 2023",
-    "description": "How cognitive empathy — using our own experiences to understand others — helps leaders build a better workplace. Followed by a panel with Stephanie B. and Lour Nader.",
+    "description": "How cognitive empathy, using our own experiences to understand others, can help leaders build a better workplace. Followed by a panel with Stephanie B. and Lour Nader.",
     "link": "https://www.slideshare.net/slideshow/leading-with-cognitive-empathy-youequaltech-birmingham/288446978"
   },
   {
@@ -76,7 +76,7 @@
     "title": "Demystifying Neurodiversity for Engineering Leaders",
     "venue": "WRK Digital Meetup, xDesign HQ Leeds",
     "date": "25 May 2023",
-    "description": "Co-hosted with Lindsay Baker — what engineering leaders need to understand about neurodiversity in the workplace."
+    "description": "Co-hosted with Lindsay Baker, exploring what engineering leaders need to understand about neurodiversity in the workplace."
   },
   {
     "type": "Panel",
@@ -101,7 +101,7 @@
     "title": "React for .NET Developers",
     "venue": "DDD North 2015",
     "date": "27 Oct 2015",
-    "description": "Introducing React to .NET developers — how its approach to data flow and client-side UI can benefit ASP.NET applications.",
+    "description": "Introducing React to .NET developers and how its approach to data flow and client-side UI can benefit ASP.NET applications.",
     "link": "https://blog.scottlogic.com/2015/10/27/destroying-monoliths-at-dddnorth.html"
   }
 ]

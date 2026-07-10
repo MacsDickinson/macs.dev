@@ -20,7 +20,7 @@ So, how do you create a productive and mentally supportive environment? Foster a
 
 But we are all human, and regardless of your environment, there will always be hard times. That's why it's so important to encourage a culture of openness and support. It has to be okay to say "I'm struggling" without fear of judgment.
 
-Switching off is vital. We're always connected, always 'on' — but our minds need to recharge. Find something that helps you relax and make time for it. It's better to perform consistently than to have periods of crunch time followed by burnout. Our bodies and minds aren't designed to be at 100% all the time.
+Switching off is vital. We're always connected, always 'on' - but our minds need to recharge. Find something that helps you relax and make time for it. It's better to perform consistently than to have periods of crunch time followed by burnout. Our bodies and minds aren't designed to be at 100% all the time.
 
 When running on empty, it can be hard to identify that you're struggling. You wouldn't wait until your car's tank was empty before filling it with petrol, so why wait until you're burnt out to seek help?
 

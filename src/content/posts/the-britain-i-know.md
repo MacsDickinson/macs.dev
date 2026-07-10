@@ -16,7 +16,7 @@ From the random paediatric doctor who helped us at the airport to the fire servi
 
 Our friends, family and neighbours have rallied around us, offering help and kind words at every turn. This experience has shown me a Britain that stands together, full of compassion and community spirit.
 
-The version of Britain portrayed on social media right now is driven by lies and misinformation, spreading division and distrust. Your news feed algorithm has been hacked to orchestrate an attack on our culture and values — values of democracy, respect, tolerance, and liberty.
+The version of Britain portrayed on social media right now is driven by lies and misinformation, spreading division and distrust. Your news feed algorithm has been hacked to orchestrate an attack on our culture and values - values of democracy, respect, tolerance, and liberty.
 
 Don't be swayed by these divisive tactics. Instead, celebrate and nurture the real Britain, a country where we have our neighbours' backs and where kindness prevails.
 

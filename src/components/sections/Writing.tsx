@@ -20,7 +20,7 @@ export function Writing() {
               Notes on <span className="italic text-[var(--ac)]">the craft</span>.
             </>
           }
-          description="Longer thoughts on leadership, org design and building software where being wrong is expensive. Most started life as LinkedIn posts — dated to when they were first published." />
+          description="Longer thoughts on leadership, org design and building software where being wrong is expensive. Most started life as LinkedIn posts, dated to when they were first published." />
 
 
         <div className="grid gap-5 md:grid-cols-3">

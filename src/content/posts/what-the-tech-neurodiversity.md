@@ -1,6 +1,6 @@
 ---
 title: Neurodiversity: Daily Struggle or Untapped Superpower?
-excerpt: I should have been completing my ADHD assessment when I wrote this. Instead I wrote this — which rather proves the point.
+excerpt: I should have been completing my ADHD assessment when I wrote this. Instead I wrote this, which rather proves the point.
 date: 2023-05-25
 tag: Neurodiversity
 linkedin: https://www.linkedin.com/posts/activity-7067398828475211777-hIJW
@@ -12,7 +12,7 @@ But when does individuality cross the line into neurodiversity? Does fidgeting m
 
 Short answer: no.
 
-Conditions such as autism, ADHD, dyslexia and OCD are considered disabilities, diagnosed because of the sustained negative impact they are having on that person's life. Recently, there has been a flurry of media coverage about the over-diagnosis of ADHD. It's important to remember that behind each of these diagnoses is a person — a person who has been pushed to their limit, grappling with the challenge of fitting into societal norms. While over-diagnosis and the unregulated industry surrounding it is a problem, this should not be used to downplay the very real struggles of those currently grappling with these conditions.
+Conditions such as autism, ADHD, dyslexia and OCD are considered disabilities, diagnosed because of the sustained negative impact they are having on that person's life. Recently, there has been a flurry of media coverage about the over-diagnosis of ADHD. It's important to remember that behind each of these diagnoses is a person. A person who has been pushed to their limit, grappling with the challenge of fitting into societal norms. While over-diagnosis and the unregulated industry surrounding it is a problem, this should not be used to downplay the very real struggles of those currently grappling with these conditions.
 
 People who know me know it's pretty obvious I have ADHD. I've been told I probably do, and I'm on the waiting list for diagnosis. That waiting list is three years. I've applied to be seen privately and my GP is being super supportive, but as anyone who's been through ADHD diagnosis knows, it's a real struggle to complete when you have ADHD. Case in point: I should be completing my assessment right now, not writing this post.
 

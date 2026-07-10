@@ -9,7 +9,7 @@ tag: Leadership
 # readingTime: 4 min read   (computed from word count if omitted)
 ---
 
-Files starting with `_` are ignored by the site — copy this one to
+Files starting with `_` are ignored by the site - copy this one to
 `your-slug.md` to publish. The filename becomes the URL: `/blog/your-slug`.
 
 Write standard markdown: **bold**, *italics*, [links](https://example.com),
@@ -20,5 +20,5 @@ language.
 
 ## Section headings use the display face
 
-Keep paragraphs short — the template gives them comfortable measure and
+Keep paragraphs short - the template gives them comfortable measure and
 line-height for long reads.
