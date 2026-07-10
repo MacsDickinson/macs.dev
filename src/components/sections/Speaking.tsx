@@ -16,7 +16,7 @@ export function Speaking({ onBook }: {onBook: () => void;}) {
               Talks, workshops <span className="italic text-[var(--ac)]">&amp; stages</span>.
             </>
           }
-          description="Sharing insights on engineering leadership, team scaling, and adopting AI safely — at conferences, internal summits, and on podcasts." />
+          description="Talks on engineering leadership, scaling teams, and adopting AI without the hype — at conferences, internal summits, and on podcasts." />
 
 
         <div className="flex flex-col">

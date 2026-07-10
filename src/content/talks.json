@@ -5,7 +5,7 @@
     "title": "Building a Modern Bank",
     "venue": "MD Fintech 26, Manchester Digital",
     "date": "Jun 2026",
-    "description": "Talk at Manchester Digital's MD Fintech 26 on what it takes to build a modern bank — the engineering, architecture and culture choices behind LHV Bank's platform.",
+    "description": "What it takes to build a modern bank — the engineering, architecture and culture choices behind LHV Bank's platform.",
     "link": "https://www.slideshare.net/slideshow/building-a-modern-bank-manchester-digital-fintech-26/288446938"
   },
   {
@@ -14,7 +14,7 @@
     "title": "Leading Through the Noise: Making AI Stick in Engineering Teams",
     "venue": "Wrk Digital: Leadership",
     "date": "Mar 2026",
-    "description": "AI is evolving faster than engineering organisations can comfortably track, leaving leaders to cut through constant noise and hype. This talk focuses on how engineering leaders can drive real AI adoption through culture, experimentation and clear decision-making, turning rapid change into sustained team impact rather than fragmented tool use.",
+    "description": "AI is moving faster than most engineering organisations can track. How leaders can cut through the noise and drive adoption that actually sticks — through culture, experimentation and clear decisions.",
     "link": "https://www.slideshare.net/slideshow/leading-through-the-noise-wrk-digital/288447043"
   },
   {
@@ -23,7 +23,7 @@
     "title": "Nimble scaling: LHV Bank accelerates value flow and strategic alignment through Team Topologies",
     "venue": "Conflux Case Study",
     "date": "Dec 2025",
-    "description": "Hands-on workshops on restructuring engineering organisations for flow.",
+    "description": "How we restructured LHV Bank's engineering organisation for flow using Team Topologies — hands-on workshops, captured as a Conflux case study.",
     "link": "https://confluxhq.com/all-success-stories/nimble-scaling-lhv-bank-accelerates-value-flow-and-strategic-alignment-through-team-topologies"
   },
   {
@@ -32,7 +32,7 @@
     "title": "AI, Data & Automation: Redefining the Customer Experience",
     "venue": "Open Banking Expo 2025",
     "date": "12 Oct 2025",
-    "description": "Session on how AI, data and automation are transforming customer experience in financial services, representing LHV Bank at Open Banking Expo 2025.",
+    "description": "What AI, data and automation actually change about customer experience in financial services.",
     "link": "https://www.openbankingexpo.com"
   },
   {
@@ -41,7 +41,7 @@
     "title": "WealthTech Panel Discussion",
     "venue": "FinTech North York FinTech Forum 2025",
     "date": "16 Jul 2025",
-    "description": "WealthTech themed panel at the York FinTech Forum 2025 featuring Macs Dickinson (Director of Engineering, LHV Bank), discussing innovation, opportunities and challenges in WealthTech with sector leaders.",
+    "description": "Panel on innovation, opportunities and challenges in WealthTech, alongside other sector leaders.",
     "link": "https://www.fintechnorth.uk/events/york-fintech-forum/"
   },
   {
@@ -50,7 +50,7 @@
     "title": "Scaling Panel Discussion",
     "venue": "FinTech North Leeds Conference 2024",
     "date": "22 May 2024",
-    "description": "Panel on scaling FinTechs featuring Macs Dickinson (Director of Engineering, LHV Bank) alongside industry leaders, chaired by Julia Streets at the FinTech North Leeds Conference. Panel explored scaling strategies and growth challenges in UK fintech.",
+    "description": "Panel on scaling fintechs, chaired by Julia Streets — growth strategies and the problems that come with them.",
     "link": "https://www.fintechnorth.uk/events/leeds-conference-2024/"
   },
   {
@@ -59,7 +59,7 @@
     "title": "People as Catalyst and Obstacle to Change",
     "venue": "Disruptors '23, Nexus Leeds",
     "date": "30 Nov 2023",
-    "description": "Panel discussion on how people can be both the catalyst and the biggest obstacle to enacting organisational change."
+    "description": "Panel discussion on how people can be both the catalyst and the biggest obstacle to organisational change."
   },
   {
     "type": "Keynote",
@@ -67,7 +67,7 @@
     "title": "Leading with Cognitive Empathy",
     "venue": "YouEqualTech, Birmingham",
     "date": "6 Jul 2023",
-    "description": "Talk on how cognitive empathy — using our own experiences to understand others — can help leaders build a better workplace, followed by a panel discussion with Stephanie B. and Lour Nader.",
+    "description": "How cognitive empathy — using our own experiences to understand others — helps leaders build a better workplace. Followed by a panel with Stephanie B. and Lour Nader.",
     "link": "https://www.slideshare.net/slideshow/leading-with-cognitive-empathy-youequaltech-birmingham/288446978"
   },
   {
@@ -76,7 +76,7 @@
     "title": "Demystifying Neurodiversity for Engineering Leaders",
     "venue": "WRK Digital Meetup, xDesign HQ Leeds",
     "date": "25 May 2023",
-    "description": "Software Engineering Leadership meetup co-hosted with Lindsay Baker, exploring neurodiversity in the workplace and what engineering leaders need to understand."
+    "description": "Co-hosted with Lindsay Baker — what engineering leaders need to understand about neurodiversity in the workplace."
   },
   {
     "type": "Panel",
@@ -84,7 +84,7 @@
     "title": "Build, Buy or Outsource? The Software Dilemma",
     "venue": "Fruition Consulting & Enablis, Brew Society Leeds",
     "date": "17 Nov 2022",
-    "description": "Panel with Cassy Calvert, Rebecca Fitzgerald, Paul Durkan and Ngaire Guzzetti debating the build vs buy vs outsource question for software delivery leaders."
+    "description": "Debating build vs buy vs outsource with Cassy Calvert, Rebecca Fitzgerald, Paul Durkan and Ngaire Guzzetti."
   },
   {
     "type": "Keynote",
@@ -92,7 +92,7 @@
     "title": "React Context API – Do You Really Need Redux?",
     "venue": "TechEdge",
     "date": "31 Oct 2018",
-    "description": "TechEdge talk by Macs Dickinson on the React Context API and exploring whether Redux is necessary for state management in React apps.",
+    "description": "A look at the React Context API and whether you really need Redux for state management.",
     "link": "https://www.youtube.com/watch?v=3gEs8ITZZO8"
   },
   {
@@ -101,7 +101,7 @@
     "title": "React for .NET Developers",
     "venue": "DDD North 2015",
     "date": "27 Oct 2015",
-    "description": "Talk introducing React to .NET developers, explaining how React's approach to data flow and interactive client-side UI can benefit ASP.NET applications, based on your session at DDD North 2015.",
+    "description": "Introducing React to .NET developers — how its approach to data flow and client-side UI can benefit ASP.NET applications.",
     "link": "https://blog.scottlogic.com/2015/10/27/destroying-monoliths-at-dddnorth.html"
   }
 ]

@@ -3,42 +3,42 @@
     "period": "2022 — Present",
     "role": "Director of Engineering",
     "company": "LHV Bank",
-    "description": "Leading engineering across a growing UK bank, scaling high-performing teams and embedding AI safely within a heavily regulated environment."
+    "description": "Built a UK bank from scratch: a core banking migration delivered without incident, a new retail banking app launched, and the engineering teams scaled to match."
   },
   {
     "period": "2019 — 2022",
     "role": "Senior Engineering Manager",
-    "company": "Pokerstars - Flutter",
-    "description": "My previous role in International Sports was recently expanded to cover all frontend squads across the tribe as we scaled up to meet increased demand for delivery. My team now includes 6 squads with 8 direct reports and an organisation of over 30 Engineers."
+    "company": "PokerStars (Flutter)",
+    "description": "Scaled frontend delivery across International Sports — from one squad to six, with 30+ engineers shipping across the tribe."
   },
   {
     "period": "2017 — 2019",
     "role": "Lead Software Engineer",
-    "company": "SkyBet - Flutter",
-    "description": "I joined SkyBet as Lead Software Engineer for their Customer Integration team. We were responsible for multiple mission critical services so there was a particular focus on strong operational engineering practices. This involved a focus on logging, monitoring and alerting to ensure we could support our systems when on-call. As the Lead I managed all the engineers in the squad, helping them with their personal development and mentoring them to help them grow. I also worked very closely with our Product Manager to define and populate our roadmap."
+    "company": "Sky Betting & Gaming (Flutter)",
+    "description": "Ran the mission-critical Customer Integration services — reliable, observable, and supportable at 3am."
   },
   {
     "period": "2015 — 2017",
     "role": "Head of Technology",
     "company": "Ticket Arena",
-    "description": "I was responsible for all technical operations within the business. This included managing three teams; two Scrum teams developing a ground up rebuild of our ticketing platforms Event Genius & Ticket Arena, and one Kanban team supporting BAU changes. My main responsibilities were recruitment, line management, technical design and engineering strategy, but during my time here I also helped out as interim Scrum Master and PO, setup builds, deployments, monitoring & infrastructure, and was the last line of support."
+    "description": "Rebuilt the Event Genius and Ticket Arena ticketing platforms from the ground up, while running all of technology for the business."
   },
   {
     "period": "2014 — 2015",
     "role": "Technical Lead",
-    "company": "Ticket Arena",
-    "description": "I returned to Blacklight as their Technical Lead for the product development team where I was responsible for their internal products. These products were built using a variety of platforms including ASP.NET, SharePoint, Dynamics CRM & PHP. We also developed apps for iOS & Android. This role was my first introduction to leadership, working closely with the Technical Director as the most experienced Engineer in the company. I took on line management and recruitment responsibilities whilst helping define our ways of working as a company."
+    "company": "Blacklight Software",
+    "description": "Shipped the company's internal products across .NET, SharePoint, Dynamics and mobile — and took my first steps into leadership."
   },
   {
     "period": "2013 — 2014",
     "role": "Senior Software Developer",
     "company": "HH Global",
-    "description": "At HH Global I was a key member of the core development team, driving forward the businesses core system HHub2. HHub2 was built on top of ASP.NET MVC 3, EF5 and SQL Server. I was responsible for picking up user stories and bugs from the backlog, discussing them with a BA, developing a solution and handing over to an outsourced test team."
+    "description": "Core developer on HHub2, the platform at the heart of the business."
   },
   {
     "period": "2011 — 2013",
     "role": "Software Developer",
     "company": "Blacklight Software",
-    "description": "Blacklight was where I really cut my teeth as an Engineer. Working at a consultancy there isn’t any room for error, you have to learn quickly and react to your clients’ needs. This was where I learnt the importance of adaptability; whether in analysis, design, development, onsite support or providing training for other team members."
+    "description": "Where I cut my teeth. Consultancy work: you learn quickly, or not at all."
   }
 ]

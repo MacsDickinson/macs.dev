@@ -86,7 +86,7 @@ export function BookMe() {
           organisation: form.organisation,
           topic: form.topic,
           message: form.message,
-          _subject: `macs.dev inquiry — ${form.topic} — ${form.name}`,
+          _subject: `macs.dev enquiry — ${form.topic} — ${form.name}`,
           _template: 'table',
           _replyto: form.email
         })
@@ -118,12 +118,12 @@ export function BookMe() {
                 </span>
               </div>
               <h2 className="font-display text-4xl md:text-6xl font-light leading-[0.95] tracking-tight text-[var(--text)] [font-variation-settings:'opsz'_144]">
-                Let&apos;s put me on <span className="italic text-[var(--ac)]">your stage</span>.
+                I&apos;d love to join <span className="italic text-[var(--ac)]">your lineup</span>.
               </h2>
               <p className="mt-6 max-w-md text-[var(--text-soft)] leading-relaxed">
-                Planning a conference, internal summit, or podcast episode? Tell
-                me what you&apos;re building and I&apos;ll get back to you
-                personally.
+                Planning a conference, internal summit, or podcast episode?
+                Tell me what you&apos;re planning and I&apos;ll get back to
+                you.
               </p>
               <div className="mt-8 space-y-2">
                 <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
@@ -274,7 +274,7 @@ export function BookMe() {
                     'Sending…' :
                     status === 'error' ?
                     'Try again' :
-                    'Send inquiry'}
+                    'Send enquiry'}
                     </button>
 
                     {status === 'error' &&
