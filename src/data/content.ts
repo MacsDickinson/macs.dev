@@ -153,6 +153,7 @@ function toPost(path: string, raw: string, kind: BlogPost['kind']): BlogPost | n
       content = raw.slice(match[0].length);
     }
   }
+  if (meta.draft === true) return null; // unpublished drafts stay off the site
   return {
     slug,
     title: String(meta.title ?? slug),

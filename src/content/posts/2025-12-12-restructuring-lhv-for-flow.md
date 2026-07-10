@@ -1,5 +1,5 @@
 ---
-title: Restructuring LHV for Flow
+title: Restructuring for Flow
 excerpt: Three customer segments, shared platforms, and a cost base to hold steady. How Team Topologies and the team at Conflux helped us unlock it.
 date: 2025-12-12
 tag: Org Design

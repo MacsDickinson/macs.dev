@@ -95,6 +95,21 @@ function HtmlPostFrame({ post }: {post: Post;}) {
 
 }
 
+// Root-relative asset URLs (e.g. `/img/foo.png` in a markdown post) must be
+// prefixed with Vite's base — GitHub Pages serves the site from `/macs.dev/`,
+// where a bare `/img/...` would 404. Only string URLs need this; imported
+// assets are already rewritten by Vite.
+const withBase = (src?: string) =>
+src && src.startsWith('/') ?
+`${import.meta.env.BASE_URL.replace(/\/$/, '')}${src}` :
+src;
+
+const MD_COMPONENTS = {
+  img: ({ src, alt, ...rest }: React.ImgHTMLAttributes<HTMLImageElement>) =>
+  <img src={withBase(typeof src === 'string' ? src : undefined)} alt={alt ?? ''} loading="lazy" {...rest} />
+
+};
+
 export function BlogPost() {
   const { slug } = useParams<{
     slug: string;
@@ -214,7 +229,7 @@ export function BlogPost() {
                 {heading}
                 <div className="mt-10 h-px bg-[var(--edge-soft)]" />
                 <div className="post-prose mt-10">
-                  <Markdown remarkPlugins={[remarkGfm]}>
+                  <Markdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
                     {post.content}
                   </Markdown>
                 </div>
