@@ -1,5 +1,5 @@
 ---
-title: AI Doesn't Fix Broken Engineering. It Amplifies It.
+title: Forest and the Desert.
 excerpt: Agentic AI is a multiplier, and multiplying a desert doesn't give you a forest.
 date: 2026-03-23
 tag: AI

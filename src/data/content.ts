@@ -124,13 +124,19 @@ function estimateReadingTime(text: string): string {
   return `${Math.max(1, Math.round(words / 220))} min read`;
 }
 
-function slugFromPath(path: string): string {
-  const name = path.split('/').pop() ?? path;
-  return name.replace(/\.(md|html)$/, '');
+// Post files are named `yyyy-MM-dd-title.md` for easy sorting on disk. The
+// date prefix stays out of the URL: `2026-03-07-feedback-loops.md` publishes
+// at `/blog/feedback-loops`. It also acts as the date if frontmatter omits one.
+function fileParts(path: string): {slug: string;fileDate?: string;} {
+  const name = (path.split('/').pop() ?? path).replace(/\.(md|html)$/, '');
+  const match = name.match(/^(\d{4}-\d{2}-\d{2})-(.+)$/);
+  return match ?
+  { slug: match[2], fileDate: match[1] } :
+  { slug: name };
 }
 
 function toPost(path: string, raw: string, kind: BlogPost['kind']): BlogPost | null {
-  const slug = slugFromPath(path);
+  const { slug, fileDate } = fileParts(path);
   if (slug.startsWith('_')) return null; // authoring templates
   let meta: PostMeta = {};
   let content = raw;
@@ -151,7 +157,7 @@ function toPost(path: string, raw: string, kind: BlogPost['kind']): BlogPost | n
     slug,
     title: String(meta.title ?? slug),
     excerpt: String(meta.excerpt ?? ''),
-    date: String(meta.date ?? ''),
+    date: String(meta.date ?? fileDate ?? ''),
     readingTime: String(meta.readingTime ?? estimateReadingTime(content)),
     tag: String(meta.tag ?? 'Notes'),
     featured: meta.featured === true,

@@ -40,7 +40,9 @@ the component + `index.css`. Keep the two separate.
 
 The blog is a historic archive of Macs's LinkedIn posts, dated to their
 original publish dates. Drop a file into `src/content/posts/` and it's live
-(`src/data/content.ts` globs the folder; filename = slug = `/blog/<slug>`):
+(`src/data/content.ts` globs the folder). Name files `yyyy-MM-dd-title.md` —
+the date prefix keeps the folder sorted, doubles as the date if frontmatter
+omits one, and is stripped from the URL (`/blog/<title>`):
 
 - **`*.md`** — markdown with a `---` frontmatter block, rendered by
   react-markdown into the `.post-prose` styles in `index.css`.
