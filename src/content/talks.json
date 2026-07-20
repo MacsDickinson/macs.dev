@@ -9,6 +9,15 @@
     "link": "https://www.slideshare.net/slideshow/building-a-modern-bank-manchester-digital-fintech-26/288446938"
   },
   {
+    "type": "Panel",
+    "slug": "pay360-2026-stablecoins",
+    "title": "UK Competitiveness in a World of Stablecoins, Tokenisation & DLT",
+    "venue": "PAY360 2026, ExCeL London",
+    "date": "Mar 2026",
+    "description": "Panel on where stablecoins are actually gaining traction — B2B cross-border payments and treasury — and why policy uncertainty makes it hard to invest in a GBP-pegged stablecoin.",
+    "link": "https://paymentexpert.com/2026/03/26/uk-stablecoin-policy-delay/"
+  },
+  {
     "type": "Keynote",
     "slug": "wrk-digital-2026",
     "title": "Leading Through the Noise: Making AI Stick in Engineering Teams",
@@ -87,6 +96,22 @@
     "description": "Debating build vs buy vs outsource with Cassy Calvert, Rebecca Fitzgerald, Paul Durkan and Ngaire Guzzetti."
   },
   {
+    "type": "Talk",
+    "slug": "tech-fest-21-mental-health-lockdown-beyond",
+    "title": "Mental Health, Lockdown & Beyond",
+    "venue": "Tech Fest 21",
+    "date": "2021",
+    "description": "On mental health in tech through lockdown and what comes after, drawing on my experience as a Mental Health First Aider."
+  },
+  {
+    "type": "Talk",
+    "slug": "tech-fest-20-going-global",
+    "title": "Going Global",
+    "venue": "TechFest 20",
+    "date": "2020",
+    "description": "Talk at SBG's TechFest 20 on distributing the International Sports platform across Europe."
+  },
+  {
     "type": "Keynote",
     "slug": "react-context-api-techedge-2019-macs-dickinson",
     "title": "React Context API – Do You Really Need Redux?",
@@ -96,6 +121,14 @@
     "link": "https://www.youtube.com/watch?v=3gEs8ITZZO8"
   },
   {
+    "type": "Talk",
+    "slug": "agile-recruitment-2017",
+    "title": "Agile Recruitment",
+    "venue": "Northern Monk, Leeds",
+    "date": "2017",
+    "description": "Applying agile thinking to how we hire engineers."
+  },
+  {
     "type": "Keynote",
     "slug": "ddd-north-2015-react-for-net-developers",
     "title": "React for .NET Developers",
@@ -103,5 +136,22 @@
     "date": "27 Oct 2015",
     "description": "Introducing React to .NET developers and how its approach to data flow and client-side UI can benefit ASP.NET applications.",
     "link": "https://blog.scottlogic.com/2015/10/27/destroying-monoliths-at-dddnorth.html"
+  },
+  {
+    "type": "Talk",
+    "slug": "leeds-sharp-2014-appveyor-ci",
+    "title": "AppVeyor CI",
+    "venue": "Leeds Sharp",
+    "date": "2014",
+    "description": "Continuous integration for .NET projects with AppVeyor."
+  },
+  {
+    "type": "Talk",
+    "slug": "leeds-sharp-2013-event-sourcing-eventstore",
+    "title": "Event Sourcing with EventStore",
+    "venue": "Leeds Sharp",
+    "date": "Nov 2013",
+    "description": "Introducing event sourcing and Event Store to the Leeds .NET community, with examples in NancyFX.",
+    "link": "https://macs.dev/blog/eventstore-with-examples-in-nancy"
   }
 ]
