@@ -13,7 +13,6 @@ export function Writing() {
     <section id="writing" className="scroll-mt-20">
       <div className="mx-auto max-w-6xl px-6 md:px-10 py-24 md:py-32">
         <SectionHeader
-          index="04"
           label="Writing"
           title={
           <>

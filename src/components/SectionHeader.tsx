@@ -1,24 +1,19 @@
-import React from 'react';
-import { Reveal } from './Reveal';
+import React from "react";
+import { Reveal } from "./Reveal";
 type SectionHeaderProps = {
-  index: string;
   label: string;
   title: React.ReactNode;
   description?: string;
 };
 export function SectionHeader({
-  index,
   label,
   title,
-  description
+  description,
 }: SectionHeaderProps) {
   return (
     <div className="mb-12 md:mb-20">
       <Reveal>
         <div className="flex items-center gap-4 mb-6">
-          <span className="font-mono text-xs tracking-widest text-[var(--ac)]">
-            {index}
-          </span>
           <span className="h-px flex-1 max-w-[120px] bg-gradient-to-r from-[var(--ac)] to-transparent" />
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">
             {label}
@@ -30,13 +25,13 @@ export function SectionHeader({
           {title}
         </h2>
       </Reveal>
-      {description &&
-      <Reveal delay={0.1}>
+      {description && (
+        <Reveal delay={0.1}>
           <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--text-soft)] leading-relaxed">
             {description}
           </p>
         </Reveal>
-      }
-    </div>);
-
+      )}
+    </div>
+  );
 }

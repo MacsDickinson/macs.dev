@@ -9,7 +9,6 @@ export function Speaking({ onBook }: {onBook: () => void;}) {
     <section id="speaking" className="scroll-mt-20">
       <div className="mx-auto max-w-6xl px-6 md:px-10 py-24 md:py-32">
         <SectionHeader
-          index="02"
           label="Speaking"
           title={
           <>

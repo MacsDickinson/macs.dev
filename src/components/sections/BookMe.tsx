@@ -109,9 +109,6 @@ export function BookMe() {
           <div className="md:col-span-5">
             <Reveal>
               <div className="flex items-center gap-4 mb-6">
-                <span className="font-mono text-xs tracking-widest text-[var(--ac)]">
-                  06
-                </span>
                 <span className="h-px w-16 bg-gradient-to-r from-[var(--ac)] to-transparent" />
                 <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">
                   Book me to speak
