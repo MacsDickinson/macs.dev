@@ -86,7 +86,7 @@ export function BookMe() {
           organisation: form.organisation,
           topic: form.topic,
           message: form.message,
-          _subject: `macs.dev inquiry — ${form.topic} — ${form.name}`,
+          _subject: `macs.dev enquiry - ${form.topic} - ${form.name}`,
           _template: 'table',
           _replyto: form.email
         })
@@ -109,21 +109,18 @@ export function BookMe() {
           <div className="md:col-span-5">
             <Reveal>
               <div className="flex items-center gap-4 mb-6">
-                <span className="font-mono text-xs tracking-widest text-[var(--ac)]">
-                  06
-                </span>
                 <span className="h-px w-16 bg-gradient-to-r from-[var(--ac)] to-transparent" />
                 <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">
                   Book me to speak
                 </span>
               </div>
               <h2 className="font-display text-4xl md:text-6xl font-light leading-[0.95] tracking-tight text-[var(--text)] [font-variation-settings:'opsz'_144]">
-                Let&apos;s put me on <span className="italic text-[var(--ac)]">your stage</span>.
+                I&apos;d love to join <span className="italic text-[var(--ac)]">your lineup</span>.
               </h2>
               <p className="mt-6 max-w-md text-[var(--text-soft)] leading-relaxed">
-                Planning a conference, internal summit, or podcast episode? Tell
-                me what you&apos;re building and I&apos;ll get back to you
-                personally.
+                Planning a conference, internal summit, or podcast episode?
+                Tell me what you&apos;re planning and I&apos;ll get back to
+                you.
               </p>
               <div className="mt-8 space-y-2">
                 <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
@@ -163,7 +160,7 @@ export function BookMe() {
                       Message sent.
                     </h3>
                     <p className="text-[var(--text-soft)] max-w-sm">
-                      Thanks for reaching out — I&apos;ll be in touch within a
+                      Thanks for reaching out. I&apos;ll be in touch within a
                       few days to talk details.
                     </p>
                     <button
@@ -274,12 +271,12 @@ export function BookMe() {
                     'Sending…' :
                     status === 'error' ?
                     'Try again' :
-                    'Send inquiry'}
+                    'Send enquiry'}
                     </button>
 
                     {status === 'error' &&
                   <p className="text-sm text-[var(--text-soft)]">
-                        Something went wrong sending that — please try again,
+                        Something went wrong sending that. Please try again,
                         or email me directly at{' '}
                         <a
                       href={`mailto:${PROFILE.email}`}

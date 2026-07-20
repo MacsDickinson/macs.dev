@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { XIcon, ArrowLeftIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 type SectionOverlayProps = {
   label: string;
   color: string;
@@ -61,14 +61,7 @@ export function SectionOverlay({
         }} />
 
       {/* Top bar */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-10">
-        <button
-          onClick={onClose}
-          className="pointer-events-auto group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-[var(--text-soft)] transition-colors hover:text-[var(--text)]">
-
-          <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-          Constellation
-        </button>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-end px-6 py-5 md:px-10">
         <div className="pointer-events-auto flex items-center gap-3">
           <span
             className="h-2.5 w-2.5 rounded-full"

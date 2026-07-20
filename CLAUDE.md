@@ -17,7 +17,7 @@ deployed to GitHub Pages via GitHub Actions.
 
 | Path | Role |
 | --- | --- |
-| `src/pages/Home.tsx` | Constellation shell; owns which overlay section is `active` |
+| `src/pages/Home.tsx` | Constellation shell; the open overlay is the URL (`/:section` route), so sections deep-link and browser back/forward work |
 | `src/pages/BlogPost.tsx` | `/blog/:slug` reading view (standalone route) |
 | `src/components/sections/Hero.tsx` | The constellation "main level" — no copy, just the lazy-loaded 3D scene + sr-only `<h1>` + mobile nav pills |
 | `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial — recipes in `GLASS_MATERIALS`), a photoreal JWST backdrop, a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only on the home route |
@@ -29,13 +29,44 @@ deployed to GitHub Pages via GitHub Actions.
 | `src/components/SectionOverlay.tsx` | Circle-clip reveal panel that every section renders inside; sets the section accent |
 | `src/components/sections/*` | About, Speaking, Work, Podcast, Writing, BookMe |
 | `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Shared section chrome + scroll-reveal wrapper |
-| `src/content/*.json`, `src/content/posts/*.json` | **All copy** — edit JSON, never hard-code text in components |
+| `src/content/*.json` | **All section copy** — edit JSON, never hard-code text in components |
+| `src/content/posts/*.md`, `*.html` | **Blog posts** — markdown or standalone interactive HTML (see below) |
 | `src/data/content.ts` | Typed loader for the JSON; add fields to the types here |
 | `src/canvas.manifest.js` | Screen registry — powers `?mp_screen=` deep links (see Verifying) |
 | `src/index.css` | Design tokens + the Signal Deck system (below) |
 
 Content is data-driven: to change words, edit the JSON. To change *look*, edit
 the component + `index.css`. Keep the two separate.
+
+The blog is a historic archive — Macs's LinkedIn posts plus his original
+2013–2015 .NET/Nancy-era blog — dated to their original publish dates. Drop a
+file into `src/content/posts/` and it's live (`src/data/content.ts` globs the
+folder). Name files `yyyy-MM-dd-title.md` — the date prefix keeps the folder
+sorted, doubles as the date if frontmatter omits one, and is stripped from the
+URL (`/blog/<title>`):
+
+- **`*.md`** — markdown with a `---` frontmatter block, rendered by
+  react-markdown into the `.post-prose` styles in `index.css`.
+- **`*.html`** — standalone interactive/immersive posts; frontmatter lives in
+  a leading `<!-- -->` comment. `BlogPost.tsx` renders them in an
+  auto-resizing iframe: *fragments* get wrapped in the Signal Deck tokens +
+  fonts (authors can use `var(--surface)`, `var(--ac)`, `.font-display`…);
+  *full documents* (real `<html>` tag) are used verbatim.
+- Files starting with `_` are skipped — `_template.md` / `_template.html`
+  are copy-me starting points documenting the frontmatter.
+- Frontmatter: `title`, `excerpt`, `date` (YYYY-MM-DD), `tag`, plus optional
+  `featured: true` (pins to the featured cards at the top of Writing; the
+  rest render as a dated archive list), `linkedin: <url>` (renders an
+  "Originally posted on LinkedIn" source link), `draft: true` (keeps the post
+  off the site entirely — for unfinished pieces), and `readingTime` (computed
+  from word count if omitted).
+- Post images live in `public/img/`; reference them root-relative in markdown
+  (`![alt](/img/foo.png)`). `BlogPost.tsx` prefixes such `/…` URLs with
+  `import.meta.env.BASE_URL` so they resolve under the `/macs.dev/` Pages base
+  — never hardcode `/macs.dev/` yourself. Filenames on a case-insensitive
+  macOS filesystem: when bulk-renaming posts, move via a temp name (write new,
+  remove old, `os.replace`) — a case-only rename like `Foo.md`→`foo.md` is the
+  *same inode*, so "write new then delete old" deletes the file you just wrote.
 
 **Hero scene notes:**
 - **Backdrop & glass are configured in `src/data/heroConfig.ts`**, not in the
@@ -132,19 +163,22 @@ them. Treat **`npm run build` passing** as the compile gate, not `tsc`.
 
 ### Verifying changes visually (do this for any UI change)
 
-The app never scroll-jumps between pages, and sections open via JS, so use the
-**`?mp_screen=` deep links** from `src/canvas.manifest.js` to land directly on
-any state, then screenshot with a headless browser.
+Each section is a deep-linkable route, so land directly on any state by URL,
+then screenshot with a headless browser. (`Home` reads the `:section` param
+and opens that overlay; browser back/forward and refresh all work.)
 
 | Screen | URL |
 | --- | --- |
-| About | `/?mp_screen=scr_4btoq4` |
-| Speaking | `/?mp_screen=scr_vriwrr` |
-| Work | `/?mp_screen=scr_j72oo0` |
-| Writing | `/?mp_screen=scr_v965fu` |
-| Podcast | `/?mp_screen=scr_wynt0n` |
-| Book me | `/?mp_screen=scr_uqxeto` |
-| A blog post | `/blog/restructuring-for-flow` |
+| About | `/about` |
+| Speaking | `/speaking` |
+| Work | `/work` |
+| Writing | `/writing` |
+| Podcast | `/podcast` |
+| Book me | `/book` |
+| A blog post | `/blog/atomic-team-design` |
+
+The legacy `?mp_screen=<id>` deep links (`src/canvas.manifest.js`) still work —
+`Home` redirects them to the canonical `/section` path on load.
 
 Reveal animations use framer-motion `whileInView` (IntersectionObserver),
 which **does not fire under a plain headless `--screenshot`**. Take a
@@ -156,7 +190,7 @@ npm run dev &   # serve on some port, e.g. 5219
 PLAYWRIGHT_BROWSERS_PATH=~/Library/Caches/ms-playwright \
   npx -y playwright@1.48.0 screenshot --full-page \
   --viewport-size=1440,1000 --wait-for-timeout=2200 \
-  "http://localhost:5219/?mp_screen=scr_wynt0n" /tmp/podcast.png
+  "http://localhost:5219/podcast" /tmp/podcast.png
 ```
 
 Then read the PNG. Verify against the hero for cohesion and check each

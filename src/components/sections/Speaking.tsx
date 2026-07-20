@@ -9,14 +9,13 @@ export function Speaking({ onBook }: {onBook: () => void;}) {
     <section id="speaking" className="scroll-mt-20">
       <div className="mx-auto max-w-6xl px-6 md:px-10 py-24 md:py-32">
         <SectionHeader
-          index="02"
           label="Speaking"
           title={
           <>
               Talks, workshops <span className="italic text-[var(--ac)]">&amp; stages</span>.
             </>
           }
-          description="Sharing insights on engineering leadership, team scaling, and adopting AI safely — at conferences, internal summits, and on podcasts." />
+          description="Talks on engineering leadership, scaling teams and adopting AI without the hype, at conferences, internal summits and on podcasts." />
 
 
         <div className="flex flex-col">

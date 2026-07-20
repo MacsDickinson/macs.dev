@@ -1,0 +1,49 @@
+<!--
+title: Interactive post title
+excerpt: One or two sentences shown under the title and on the Writing cards.
+date: 2026-01-01
+tag: Interactive
+featured: false
+readingTime: Interactive
+-->
+
+<!-- Files starting with `_` are ignored by the site - copy this one to
+     `yyyy-MM-dd-your-slug.html` to publish at /blog/your-slug (the date
+     prefix keeps the folder sorted and stays out of the URL).
+
+     This file renders inside an iframe on the post page, framed by the
+     site's header, byline and footer. Two modes:
+
+     1. Fragment (like this file): the site wraps it in the Signal Deck
+        design tokens and fonts, so you can use var(--surface), var(--ac),
+        var(--text), class="font-display" / "font-mono", the --nm-* shadows,
+        and <script> tags for interactivity.
+
+     2. Full document: start the file with <!doctype html><html>... and you
+        own everything - useful for fully immersive pieces. The site only
+        injects a resize script so the frame hugs your content.
+-->
+
+<div style="padding: 3rem; background: var(--surface); border-radius: 16px; box-shadow: var(--nm-raise);">
+  <h2 class="font-display" style="font-weight: 300; font-size: 2rem; margin: 0 0 1rem;">
+    Anything goes in here
+  </h2>
+  <p style="color: var(--text-soft); line-height: 1.7; margin: 0 0 1.5rem;">
+    Canvas visualisations, simulations, embedded demos - this block is a
+    plain HTML sandbox that still looks like the rest of the site.
+  </p>
+  <button
+    id="demo"
+    class="font-mono"
+    style="background: var(--surface-sunken); color: var(--text); border: none; border-radius: 10px; padding: 0.8rem 1.4rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; box-shadow: var(--nm-flat); cursor: pointer;">
+    Click me
+  </button>
+  <script>
+    let n = 0;
+    document.getElementById('demo').addEventListener('click', (e) => {
+      n += 1;
+      e.target.textContent = `Clicked ${n} time${n === 1 ? '' : 's'}`;
+      e.target.style.color = 'var(--ac)';
+    });
+  </script>
+</div>

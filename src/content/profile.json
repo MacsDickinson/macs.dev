@@ -3,14 +3,14 @@
   "role": "Engineering Director",
   "company": "LHV Bank",
   "tagline": "Talking about software and other less interesting things since 2009.",
-  "intro": "I specialise in scaling high-performance engineering teams with a focus on sustainable growth, organisational health, and leveraging AI safely in regulated environments.",
+  "intro": "I grow engineering teams and try to keep them healthy while doing it. Right now that means leading engineering at a UK bank, and working out where AI genuinely helps when the cost of being wrong is high.",
   "previously": ["Sky Betting & Gaming", "PokerStars", "Ticket Arena"],
   "email": "contact@macs.dev",
   "location": "United Kingdom",
   "askMeAbout": [
-    "Scaling engineering teams without losing culture",
-    "Restructuring orgs for better flow",
     "Making AI actually useful in regulated industries",
+    "Restructuring orgs for better flow",
+    "Scaling engineering teams without losing culture",
     "Mental health in the workplace"
   ]
 }
