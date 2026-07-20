@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useScreenInit } from '../useScreenInit';
 import { Hero } from '../components/sections/Hero';
@@ -49,18 +50,29 @@ const SECTIONS: Record<SectionKey, SectionDef> = {
   }
 };
 export function Home() {
+  const navigate = useNavigate();
+  const { section } = useParams<{ section?: string }>();
   const screenInit = useScreenInit() as {
     active?: SectionKey;
   };
-  const [active, setActive] = useState<SectionKey | null>(
-    screenInit.active && screenInit.active in SECTIONS ?
-    screenInit.active :
-    null
-  );
+
+  // The open section is the URL — so browser back/forward, refresh, and shared
+  // links all work, and each section (/about, /podcast…) is directly linkable.
+  const active: SectionKey | null =
+  section && section in SECTIONS ? section as SectionKey : null;
+
+  // Back-compat: `?mp_screen=` deep links (the screenshot workflow) carry the
+  // section in a query param — translate it to the canonical path once.
+  useEffect(() => {
+    if (!active && screenInit.active && screenInit.active in SECTIONS) {
+      navigate(`/${screenInit.active}`, { replace: true });
+    }
+  }, [active, screenInit.active, navigate]);
+
   const goTo = useCallback((key: string) => {
-    if (key in SECTIONS) setActive(key as SectionKey);
-  }, []);
-  const close = useCallback(() => setActive(null), []);
+    if (key in SECTIONS) navigate(`/${key}`);
+  }, [navigate]);
+  const close = useCallback(() => navigate('/'), [navigate]);
   const current = active ? SECTIONS[active] : null;
   return (
     <div className="relative h-full w-full overflow-hidden bg-[var(--field)]">

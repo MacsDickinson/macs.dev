@@ -17,7 +17,7 @@ deployed to GitHub Pages via GitHub Actions.
 
 | Path | Role |
 | --- | --- |
-| `src/pages/Home.tsx` | Constellation shell; owns which overlay section is `active` |
+| `src/pages/Home.tsx` | Constellation shell; the open overlay is the URL (`/:section` route), so sections deep-link and browser back/forward work |
 | `src/pages/BlogPost.tsx` | `/blog/:slug` reading view (standalone route) |
 | `src/components/sections/Hero.tsx` | The constellation "main level" — no copy, just the lazy-loaded 3D scene + sr-only `<h1>` + mobile nav pills |
 | `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial — recipes in `GLASS_MATERIALS`), a photoreal JWST backdrop, a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only on the home route |
@@ -163,19 +163,22 @@ them. Treat **`npm run build` passing** as the compile gate, not `tsc`.
 
 ### Verifying changes visually (do this for any UI change)
 
-The app never scroll-jumps between pages, and sections open via JS, so use the
-**`?mp_screen=` deep links** from `src/canvas.manifest.js` to land directly on
-any state, then screenshot with a headless browser.
+Each section is a deep-linkable route, so land directly on any state by URL,
+then screenshot with a headless browser. (`Home` reads the `:section` param
+and opens that overlay; browser back/forward and refresh all work.)
 
 | Screen | URL |
 | --- | --- |
-| About | `/?mp_screen=scr_4btoq4` |
-| Speaking | `/?mp_screen=scr_vriwrr` |
-| Work | `/?mp_screen=scr_j72oo0` |
-| Writing | `/?mp_screen=scr_v965fu` |
-| Podcast | `/?mp_screen=scr_wynt0n` |
-| Book me | `/?mp_screen=scr_uqxeto` |
-| A blog post | `/blog/restructuring-for-flow` |
+| About | `/about` |
+| Speaking | `/speaking` |
+| Work | `/work` |
+| Writing | `/writing` |
+| Podcast | `/podcast` |
+| Book me | `/book` |
+| A blog post | `/blog/atomic-team-design` |
+
+The legacy `?mp_screen=<id>` deep links (`src/canvas.manifest.js`) still work —
+`Home` redirects them to the canonical `/section` path on load.
 
 Reveal animations use framer-motion `whileInView` (IntersectionObserver),
 which **does not fire under a plain headless `--screenshot`**. Take a
@@ -187,7 +190,7 @@ npm run dev &   # serve on some port, e.g. 5219
 PLAYWRIGHT_BROWSERS_PATH=~/Library/Caches/ms-playwright \
   npx -y playwright@1.48.0 screenshot --full-page \
   --viewport-size=1440,1000 --wait-for-timeout=2200 \
-  "http://localhost:5219/?mp_screen=scr_wynt0n" /tmp/podcast.png
+  "http://localhost:5219/podcast" /tmp/podcast.png
 ```
 
 Then read the PNG. Verify against the hero for cohesion and check each
