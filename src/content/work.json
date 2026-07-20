@@ -40,5 +40,11 @@
     "role": "Software Developer",
     "company": "Blacklight Software",
     "description": "Where I cut my teeth. Consultancy work: you learn quickly, or not at all."
+  },
+  {
+    "period": "2008 — 2011",
+    "role": "Automation Engineer",
+    "company": "thebigword",
+    "description": "Built automations to streamline translation operations. I taught myself C#, ASP.NET and SQL in to help me improve what I could automate."
   }
 ]
