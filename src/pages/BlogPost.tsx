@@ -6,8 +6,9 @@ import { format } from 'date-fns';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Footer } from '../components/Footer';
-import { BLOG_POSTS, PROFILE } from '../data/content';
-import type { BlogPost as Post } from '../data/content';
+import { PROFILE } from '../data/content';
+import { BLOG_POSTS } from '../data/posts';
+import type { BlogPost as Post } from '../data/posts';
 
 // ---------------------------------------------------------------------------
 // HTML posts render inside an iframe so their scripts run in isolation.
@@ -118,6 +119,9 @@ export function BlogPost() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+  useEffect(() => {
+    if (post) document.title = `${post.title} — ${PROFILE.name}`;
+  }, [post]);
   if (!post) {
     return (
       <div
