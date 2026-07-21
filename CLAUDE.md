@@ -32,6 +32,7 @@ deployed to GitHub Pages via GitHub Actions.
 | `src/content/*.json` | **All section copy** — edit JSON, never hard-code text in components |
 | `src/content/posts/*.md`, `*.html` | **Blog posts** — markdown or standalone interactive HTML (see below) |
 | `src/data/content.ts` | Typed loader for the JSON; add fields to the types here |
+| `src/data/posts.ts` | Blog post loader — globs `src/content/posts/`, parses frontmatter. Embeds every post's full text, so it must only be imported from lazy-loaded code (`Writing`, `BlogPost`), never from the main chunk |
 | `src/canvas.manifest.js` | Screen registry — powers `?mp_screen=` deep links (see Verifying) |
 | `src/index.css` | Design tokens + the Signal Deck system (below) |
 
@@ -40,7 +41,7 @@ the component + `index.css`. Keep the two separate.
 
 The blog is a historic archive — Macs's LinkedIn posts plus his original
 2013–2015 .NET/Nancy-era blog — dated to their original publish dates. Drop a
-file into `src/content/posts/` and it's live (`src/data/content.ts` globs the
+file into `src/content/posts/` and it's live (`src/data/posts.ts` globs the
 folder). Name files `yyyy-MM-dd-title.md` — the date prefix keeps the folder
 sorted, doubles as the date if frontmatter omits one, and is stripped from the
 URL (`/blog/<title>`):
