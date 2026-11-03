@@ -29,14 +29,18 @@ deployed to GitHub Pages via GitHub Actions.
 | `src/components/SectionOverlay.tsx` | Circle-clip reveal panel that every section renders inside; sets the section accent |
 | `src/components/sections/*` | About, Speaking, Work, Podcast, Writing, BookMe |
 | `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Shared section chrome + scroll-reveal wrapper |
-| `src/content/*.json` | **All section copy** — edit JSON, never hard-code text in components |
+| `src/content/*.json` | **Structured content** — profile, principles, talks, work history, and podcast episodes |
 | `src/content/posts/*.md`, `*.html` | **Blog posts** — markdown or standalone interactive HTML (see below) |
 | `src/data/content.ts` | Typed loader for the JSON; add fields to the types here |
 | `src/canvas.manifest.js` | Screen registry — powers `?mp_screen=` deep links (see Verifying) |
 | `src/index.css` | Design tokens + the Signal Deck system (below) |
 
-Content is data-driven: to change words, edit the JSON. To change *look*, edit
-the component + `index.css`. Keep the two separate.
+Structured content lives in JSON; edit the corresponding file to change it.
+Section headings, descriptions, navigation labels, and form labels/messages
+currently live in components. Edit those strings in place; extracting them
+into JSON is optional, not a prerequisite for a copy change. Add new structured
+content to JSON and its types to `src/data/content.ts`. Change appearance in
+the component + `index.css`.
 
 The blog is a historic archive — Macs's LinkedIn posts plus his original
 2013–2015 .NET/Nancy-era blog — dated to their original publish dates. Drop a
@@ -157,9 +161,12 @@ npm run build    # production build → dist/  (this is the real gate)
 npm run lint     # eslint
 ```
 
-**`npx tsc --noEmit` reports pre-existing "unused React import" errors
-repo-wide** (automatic JSX runtime). These are noise — Vite/esbuild strips
-them. Treat **`npm run build` passing** as the compile gate, not `tsc`.
+**`npm run build` is the required production build gate, but Vite does not
+type-check.** For TypeScript changes, also run `npx tsc --noEmit` and compare
+its diagnostics before and after the change; fix any newly introduced errors.
+Known baseline diagnostics are TS6133 for unused React imports (automatic JSX
+runtime) and TS7016 for the missing declaration for `src/useScreenInit.js`.
+Do not dismiss other diagnostics as baseline noise.
 
 ### Verifying changes visually (do this for any UI change)
 
@@ -180,21 +187,43 @@ and opens that overlay; browser back/forward and refresh all work.)
 The legacy `?mp_screen=<id>` deep links (`src/canvas.manifest.js`) still work —
 `Home` redirects them to the canonical `/section` path on load.
 
-Reveal animations use framer-motion `whileInView` (IntersectionObserver),
-which **does not fire under a plain headless `--screenshot`**. Take a
-**full-page** screenshot so the viewport resizes to the full content height
-and every element enters view. Example that works here:
+Reveal animations use framer-motion `whileInView` (IntersectionObserver).
+They run when elements enter view, including in headless browsers. Sections
+scroll inside `SectionOverlay`'s fixed-height `overflow-y-auto` container;
+`--full-page` does not expand that container or reveal its off-screen content.
+Start the dev server on an explicit port (in a separate terminal):
 
 ```bash
-npm run dev &   # serve on some port, e.g. 5219
-PLAYWRIGHT_BROWSERS_PATH=~/Library/Caches/ms-playwright \
-  npx -y playwright@1.48.0 screenshot --full-page \
-  --viewport-size=1440,1000 --wait-for-timeout=2200 \
-  "http://localhost:5219/podcast" /tmp/podcast.png
+npm run dev -- --port 5219 --strictPort
 ```
 
-Then read the PNG. Verify against the hero for cohesion and check each
-section's accent is correct.
+In a Playwright session with a `page` already created, capture successive
+viewports of the overlay, allowing each reveal to finish:
+
+```js
+await page.setViewportSize({ width: 1440, height: 1000 });
+await page.goto('http://localhost:5219/podcast');
+await page.waitForTimeout(2200);
+const scroller = page.getByRole('dialog').locator('.overflow-y-auto');
+await scroller.waitFor({ state: 'visible' });
+let frame = 0;
+while (true) {
+  await page.waitForTimeout(1200);
+  await page.screenshot({ path: `/tmp/podcast-${frame++}.png` });
+  const atBottom = await scroller.evaluate((el) =>
+    el.scrollTop + el.clientHeight >= el.scrollHeight - 1
+  );
+  if (atBottom) break;
+  await scroller.evaluate((el) => {
+    el.scrollTop += el.clientHeight * 0.7;
+  });
+}
+```
+
+Read every PNG. Verify against the hero for cohesion and check each section's
+accent is correct. For blog posts, scroll the reading view's own scroll
+container to trigger reveals before capturing; inspect its overflow rather
+than assuming the document scrolls.
 
 The hero itself is WebGL (renders fine in headless Chromium via SwiftShader)
 but needs `--wait-for-timeout=4500` or so for the lazy chunk + font + first
@@ -205,16 +234,21 @@ frames. To see the light sweep, drive it with a scripted Playwright
 
 - **Never commit straight to `main`.** Branch first
   (`redesign/…`, `feat/…`, `fix/…`), commit, push, open a PR against `main`.
-- End commit messages with:
-  `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`
-- End PR bodies with the Claude Code generation line.
+- Use attribution for the tool that actually contributed. For Codex, end
+  commit messages with:
+  `Co-Authored-By: Codex <noreply@openai.com>`
+  and PR bodies with the exact line `Generated with Codex.`
+  For Claude Code, use:
+  `Co-Authored-By: Claude <noreply@anthropic.com>`
+  and `Generated with Claude Code.` Do not invent model names or versions.
 - **Merging to `main` auto-deploys** to GitHub Pages
   (`.github/workflows/deploy.yml`). Make sure `npm run build` passes and the
   change is visually verified before merging.
 
 ## Keeping this file current
 
-**Update `CLAUDE.md` as the final step of any substantive change** — when you
-add/rename a key file, change the design tokens or the Signal Deck system,
-alter the build/verify workflow, or change the git/deploy process, edit the
-relevant section here in the same PR. Leave it accurate for the next agent.
+**Update `AGENTS.md` and the matching guidance in `CLAUDE.md` as the final
+step of any substantive change** — when you add/rename a key file, change the
+design tokens or the Signal Deck system, alter the build/verify workflow, or
+change the git/deploy process, edit the relevant sections in the same PR.
+Keep shared instructions consistent between the two files.
