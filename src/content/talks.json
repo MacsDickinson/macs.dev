@@ -1,5 +1,50 @@
 [
   {
+    "type": "Panel",
+    "slug": "northern-fintech-summit-2026-talent-skills-ai",
+    "title": "Keeping Pace: Fintech Talent and Skills in the Age of AI",
+    "venue": "Northern FinTech Summit 2026, York Guildhall",
+    "date": "21 Oct 2026",
+    "description": "Panel with Crispin Read and Dr Ashleigh McLellan, moderated by Rhys Griffiths, on how AI is changing hiring, skills and learning in fintech, and why human judgement, curiosity and psychological safety still matter.",
+    "link": "https://www.fintechnorth.uk/events/northern-fintech-summit-2026/"
+  },
+  {
+    "type": "Panel",
+    "slug": "pro-manchester-2026-ai-integrity-talent-shift",
+    "title": "FinTech Next: AI, Integrity & The Talent Shift",
+    "venue": "pro-manchester, Campfield Manchester",
+    "date": "15 Oct 2026",
+    "description": "Panel with Nicola Towse, Lucas Germanos and Alice Pearce, moderated by Kimberley Waldron, on AI accountability, human oversight and the skills and governance banks need as AI becomes part of everyday operations.",
+    "link": "https://www.pro-manchester.co.uk/event/closing-the-fintech-skills-gap-ai-integration-and-workforce-strategy/"
+  },
+  {
+    "type": "Panel",
+    "slug": "changemakers-club-leeds-2026",
+    "title": "Changemakers Club",
+    "venue": "hedgehog lab, Leeds Digital Festival",
+    "date": "30 Sep 2026",
+    "description": "Panel with Paul and Rebecca on how leaders can champion change, challenge established assumptions and balance new opportunities with stability, including what first principles thinking means in a regulated environment.",
+    "link": "https://hedgehoglab.com/events/changemakers-club-edinburgh/"
+  },
+  {
+    "type": "Panel",
+    "slug": "pexa-2026-beyond-the-job-title",
+    "title": "Beyond the Job Title: How FinTech in Leeds Is Reinventing Careers",
+    "venue": "PEXA, Leeds Digital Festival, Platform Leeds",
+    "date": "29 Sep 2026",
+    "description": "Panel with Lucia Morales-Gibney, Sat Mann and Ryan Walsh, hosted by Vic Bolton, on opening up careers in fintech, building inclusive teams and why curiosity and continuous learning matter as AI changes the barriers to entry.",
+    "link": "https://leedsdigitalfestival.org/events/beyond-the-job-title/"
+  },
+  {
+    "type": "Panel",
+    "slug": "future-of-the-tech-team-2026",
+    "title": "The Future of the Tech Team: What's Coming and How to Be Ready",
+    "venue": "Codurance & Exalto Consulting, Leeds Digital Festival, Platform Leeds",
+    "date": "22 Sep 2026",
+    "description": "Panel with Nayza Fioritta Neves Ferro, James Milner and Simon Shaw, hosted by Natalie Gray, on how AI is reshaping engineering teams, the skills that matter next and how to retain the human edge as tools amplify existing practices.",
+    "link": "https://leedsdigitalfestival.org/events/the-future-of-the-tech-team/"
+  },
+  {
     "type": "Keynote",
     "slug": "md-fintech-26-building-a-modern-bank",
     "title": "Building a Modern Bank",
