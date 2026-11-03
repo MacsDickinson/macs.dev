@@ -4,7 +4,7 @@ import { ArrowUpRightIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { SectionHeader } from '../SectionHeader';
 import { Reveal } from '../Reveal';
-import { BLOG_POSTS } from '../../data/content';
+import { BLOG_POSTS } from '../../data/posts';
 
 export function Writing() {
   const featured = BLOG_POSTS.filter((post) => post.featured);

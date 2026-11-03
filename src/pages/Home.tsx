@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useScreenInit } from '../useScreenInit';
@@ -8,9 +8,14 @@ import { Footer } from '../components/Footer';
 import { About } from '../components/sections/About';
 import { Speaking } from '../components/sections/Speaking';
 import { Work } from '../components/sections/Work';
-import { Writing } from '../components/sections/Writing';
 import { Podcast } from '../components/sections/Podcast';
 import { BookMe } from '../components/sections/BookMe';
+
+// Writing embeds the full text of every blog post (via data/posts.ts), so it
+// loads on demand — keeping all that prose out of the main chunk.
+const Writing = React.lazy(() =>
+import('../components/sections/Writing').then((m) => ({ default: m.Writing }))
+);
 type SectionKey = 'about' | 'speaking' | 'work' | 'writing' | 'podcast' | 'book';
 type SectionDef = {
   label: string;
@@ -49,6 +54,10 @@ const SECTIONS: Record<SectionKey, SectionDef> = {
     render: () => <BookMe />
   }
 };
+// The index.html title is the canonical default — restored when no overlay
+// is open.
+const DEFAULT_TITLE = document.title;
+
 export function Home() {
   const navigate = useNavigate();
   const { section } = useParams<{ section?: string }>();
@@ -69,6 +78,13 @@ export function Home() {
     }
   }, [active, screenInit.active, navigate]);
 
+  // Keep the tab title in sync with the open overlay, so history entries and
+  // shared links read as more than one repeated page name.
+  useEffect(() => {
+    const label = active ? SECTIONS[active].label : null;
+    document.title = label ? `${label} — Macs Dickinson` : DEFAULT_TITLE;
+  }, [active]);
+
   const goTo = useCallback((key: string) => {
     if (key in SECTIONS) navigate(`/${key}`);
   }, [navigate]);
@@ -85,8 +101,8 @@ export function Home() {
           label={current.label}
           color={current.color}
           onClose={close}>
-          
-            {current.render(goTo)}
+
+            <Suspense fallback={null}>{current.render(goTo)}</Suspense>
             <Footer />
           </SectionOverlay>
         }
