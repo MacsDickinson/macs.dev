@@ -70,6 +70,7 @@ export type Profile = {
   previously: string[];
   email: string;
   location: string;
+  socials: { linkedin: string; twitter: string; github: string };
   askMeAbout: string[];
 };
 

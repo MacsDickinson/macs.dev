@@ -1,46 +1,54 @@
 # macs.dev — Portfolio & Blog
 
-Personal portfolio and blog for Macs Dickinson. An interactive constellation
-homepage with overlay sections, built as a fully static site.
+Personal portfolio and blog for Macs Dickinson. A photographic portrait homepage
+with animated paper sections and a blog archive, built as a fully static site.
+The original constellation remains available at `/?constellation`.
 
 **Stack:** [Vite](https://vitejs.dev) + React + TypeScript + Tailwind CSS,
 deployed to **GitHub Pages** for free via GitHub Actions.
 
 ## Editing content (no code required)
 
-All copy lives in plain JSON under [`src/content/`](src/content/). Edit a
+Structured profile, career, talk and podcast content lives in plain JSON under [`src/content/`](src/content/). Edit a
 file, commit, and the site redeploys automatically.
 
 | File | What it controls |
 | --- | --- |
-| `profile.json` | Name, role, tagline, intro, email, past companies, "ask me about" topics |
+| `profile.json` | Name, role, tagline, intro, email, past companies, social links, "ask me about" topics |
 | `talks.json` | Talks, workshops & podcast appearances (set `"upcoming": true` to badge one) |
 | `work.json` | Work history timeline |
-| `podcasts.json` | Podcast episodes |
-| `principles.json` | The principles grid in About |
-| `posts/*.json` | Blog posts — **one file per post** |
+| `podcasts.json` | Guest podcast appearances (My podcast currently says Coming soon) |
+| `principles.json` | The principles in About |
+| `posts/*.md` or `posts/*.html` | Blog posts — **one file per post** |
 
 ### Adding a blog post
 
-Create `src/content/posts/my-new-post.json`:
+Create `src/content/posts/2026-07-07-my-new-post.md`:
 
-```json
-{
-  "slug": "my-new-post",
-  "title": "My New Post",
-  "excerpt": "One-line teaser shown in the Writing section.",
-  "date": "2026-07-07",
-  "readingTime": "5 min read",
-  "tag": "Leadership",
-  "body": [
-    "Each string in this array is a paragraph.",
-    "Add as many as you like."
-  ]
-}
+```markdown
+---
+title: My New Post
+excerpt: One-line teaser shown in the Writing section.
+date: 2026-07-07
+tag: Leadership
+---
+
+Write the post in Markdown here.
 ```
 
-The post appears automatically at `/blog/my-new-post`, newest first. The
-`slug` should match the filename and becomes the URL.
+The post appears automatically at `/blog/my-new-post`, newest first. The date
+prefix is stripped from the URL. Add `featured: true` to pin it in Writing or
+`draft: true` to keep it unpublished. Reading time is computed when omitted.
+Standalone interactive HTML posts are also supported; see the `_template` files
+and [AGENTS.md](AGENTS.md) for their frontmatter and iframe behaviour.
+
+### Typography and profile links
+
+Heading typography uses locally hosted Aurelia; Inter is used for body text and
+controls. Change `--portrait-font` in `src/portrait.css` to `Ledger` for the alternate
+heading treatment. Font licences are kept alongside the files in `public/fonts/`.
+LinkedIn, Twitter/X and GitHub destinations live in `profile.json` under `socials`.
+Work ends with a LinkedIn CTA; the shared content footers also include these links.
 
 ## Local development
 
@@ -62,7 +70,7 @@ Every push to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows
 which builds the site and publishes it to GitHub Pages at:
 
 ```
-https://macsdickinson.github.io/macs.dev/
+https://macs.dev/
 ```
 
 **One-time setup:** in the repo go to *Settings → Pages* and set **Source**

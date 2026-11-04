@@ -1,88 +1,30 @@
-import React, { Suspense, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { PROFILE } from '../../data/content';
-import { useMediaQuery } from '../../useMediaQuery';
-import { heroImageForDate } from '../../data/heroConfig';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import { BLOG_POSTS, WORK, TALKS, PODCASTS, PROFILE } from '../../data/content';
 
-// three.js + the scene are heavy — split them out so blog routes stay light.
-const HeroScene = React.lazy(() =>
-import('../HeroScene').then((m) => ({ default: m.HeroScene }))
-);
-
-type HeroProps = {
-  onNavigate: (target: string) => void;
-  /** True while a section overlay covers the hero — pauses the 3D loop. */
-  covered?: boolean;
-};
-
-export function Hero({ onNavigate, covered }: HeroProps) {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
-  // Backdrop image comes from the registry + date schedule in heroConfig.
-  const image = useMemo(() => heroImageForDate(), []);
-  return (
-    <section
-      id="top"
-      className="relative h-full w-full overflow-hidden bg-[var(--field)] text-[var(--paper)]">
-
-      {/* The name in glass + rotating starfield & nav stars */}
-      <motion.div
-        className="absolute inset-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6, ease: 'easeOut' }}>
-
-        <Suspense fallback={null}>
-          <HeroScene
-            onNavigate={onNavigate}
-            showNodes={isDesktop}
-            paused={covered}
-            imageFile={image.file} />
-
-        </Suspense>
-
-      </motion.div>
-
-      {/* Vignette to deepen edges */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-          'radial-gradient(120% 90% at 30% 25%, rgba(22,27,34,0) 40%, rgba(14,17,22,0.85) 100%)'
-        }} />
-
-
-      {/* The name lives in the canvas as glass — keep it in the document for
-          screen readers and search engines. */}
-      <h1 className="sr-only">{PROFILE.name}</h1>
-
-      {/* Image credit — the JWST releases are CC BY 4.0, attribution required */}
-      <p className="pointer-events-none absolute bottom-2 right-3 z-10 hidden font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--dim)]/50 md:block">
-        {image.credit}
-      </p>
-
-      {/* Mobile: node targets as tappable pills (nav stars are desktop-only) */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        className="absolute inset-x-0 bottom-0 z-10 flex flex-wrap gap-2.5 p-6 md:hidden">
-
-        <button
-          onClick={() => onNavigate('book')}
-          className="bg-[var(--accent)] px-5 py-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--field)]">
-
-          Book me to speak →
-        </button>
-        {['speaking', 'work', 'writing', 'podcast', 'about'].map((t) =>
-        <button
-          key={t}
-          onClick={() => onNavigate(t)}
-          className="border border-[var(--field-line)] px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-[var(--dim)]">
-
-            {t}
-          </button>
-        )}
-      </motion.div>
-    </section>);
-
+const destinations = [
+  { key: 'writing', label: 'Writing', preview: BLOG_POSTS[0]?.title ?? 'Notes from the working day.' },
+  { key: 'work', label: 'Work', preview: `${WORK[0].role}, ${WORK[0].company}` },
+  { key: 'speaking', label: 'Speaking', preview: TALKS[0]?.title ?? 'Talks and conversations.' },
+  { key: 'podcast', label: 'Podcast', preview: PODCASTS[0]?.title ?? 'Conversations on engineering and leadership.' },
+  { key: 'about', label: 'About', preview: 'The person behind the work.' },
+];
+export function Hero({ onNavigate, covered }: { onNavigate: (target: string) => void; covered?: boolean }) {
+  const [selected, setSelected] = useState<string | null>(null);
+  const reduced = useReducedMotion();
+  if (covered) return null;
+  return <motion.main id="top" className="portrait-home-controls" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : .35 }}>
+    <h1 className="sr-only">{PROFILE.name}, engineering leadership and AI</h1>
+    <div className="portrait-mast"><span>Engineering leader</span><a href={`mailto:${PROFILE.email}`}>Let’s talk</a></div>
+    <nav className="portrait-destinations" aria-label="Explore">
+      {destinations.map(item => <button type="button" key={item.key} onPointerEnter={() => setSelected(item.key)} onPointerLeave={() => setSelected(null)} onFocus={() => setSelected(item.key)} onBlur={() => setSelected(null)} onClick={() => onNavigate(item.key)} className={selected === item.key ? 'is-active' : ''}>
+        <span className="destination-label">{item.label}</span><ArrowUpRight aria-hidden="true" size={20} />
+        <AnimatePresence initial={false}>{selected === item.key && <motion.span className="destination-subheading" key="preview" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: reduced ? 0 : .28, ease: [.22, 1, .36, 1] }}><span>{item.preview}</span></motion.span>}</AnimatePresence>
+      </button>)}
+    </nav>
+    <div className="portrait-introduction"><p>Engineering.<br />Leadership.<br />AI in practice.</p></div>
+    <div className="portrait-secondary"><button type="button" className="portrait-book-cta" onClick={() => onNavigate('book')}>Book me to speak<ArrowUpRight size={18} aria-hidden="true" /></button></div>
+  </motion.main>;
 }

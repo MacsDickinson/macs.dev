@@ -6,6 +6,11 @@
   "intro": "I grow engineering teams and try to keep them healthy while doing it. Right now that means leading engineering at a UK bank, and working out where AI genuinely helps when the cost of being wrong is high.",
   "previously": ["Sky Betting & Gaming", "PokerStars", "Ticket Arena"],
   "email": "contact@macs.dev",
+  "socials": {
+    "linkedin": "https://www.linkedin.com/in/macsdickinson/",
+    "twitter": "https://x.com/macsdickinson",
+    "github": "https://github.com/MacsDickinson"
+  },
   "location": "United Kingdom",
   "askMeAbout": [
     "Making AI actually useful in regulated industries",

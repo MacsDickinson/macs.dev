@@ -6,9 +6,14 @@ see [`README.md`](README.md) — this file is about *how we build and verify*.
 
 ## What this is
 
-Personal portfolio + blog for Macs Dickinson. A fully static single-page app:
-an interactive constellation homepage where each drifting node opens a
-full-screen **overlay section**. Blog posts are separate routes.
+Personal portfolio + blog for Macs Dickinson. A fully static single-page app
+with a photographic portrait stage. Every section opens on a light reading sheet;
+blog posts are separate routes in the same persistent scene.
+
+The portrait and name respond to the pointer on home, then move aside for content.
+`PortraitExperience.tsx` stays mounted across all section and blog routes.
+Use `/?constellation` to compare the original 3D homepage; its assets remain lazy.
+The accepted portrait/paper direction now applies to the whole site.
 
 **Stack:** Vite + React 18 + TypeScript + Tailwind CSS 3 + framer-motion,
 deployed to GitHub Pages via GitHub Actions.
@@ -17,30 +22,37 @@ deployed to GitHub Pages via GitHub Actions.
 
 | Path | Role |
 | --- | --- |
-| `src/pages/Home.tsx` | Constellation shell; the open overlay is the URL (`/:section` route), so sections deep-link and browser back/forward work |
+| `src/pages/Home.tsx` | Section-route shell; all sections use the portrait reading sheet; `?constellation` loads the original hero |
 | `src/pages/BlogPost.tsx` | `/blog/:slug` reading view (standalone route) |
-| `src/components/sections/Hero.tsx` | The constellation "main level" — no copy, just the lazy-loaded 3D scene + sr-only `<h1>` + mobile nav pills |
-| `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial — recipes in `GLASS_MATERIALS`), a photoreal JWST backdrop, a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only on the home route |
+| `src/components/sections/Hero.tsx` | Portrait-stage home controls, destination hover/focus previews, and existing section navigation |
+| `src/components/HeroScene.tsx` | react-three-fiber scene: the name as extruded **glass** (Fraunces, MeshTransmissionMaterial — recipes in `GLASS_MATERIALS`), a photoreal JWST backdrop, a slowly rotating starfield, the clickable nav stars (drei `<Html>`), and a cursor-steered off-screen key light + bloom. Code-split — three.js loads only for `?constellation` |
 | `src/components/HeroBackdrop.tsx` | The photographic backdrop plane (cover-fit, Ken-Burns drift, pointer parallax) |
 | `src/data/heroConfig.ts` | **Hero configuration**: backdrop image registry + per-day schedule, and the glass style (`HERO_GLASS`) |
 | `src/components/NavNode.tsx` | Dot + label button for a nav star; anchored in 3D by `HeroScene` |
 | `public/fonts/*.typeface.json` | Fraunces subsetted to the name's glyphs for the 3D text (see below) |
 | `public/backdrops/*.jpg` | Backdrop photography (JWST releases, CC BY 4.0 — credit renders in the hero corner) |
-| `src/components/SectionOverlay.tsx` | Circle-clip reveal panel that every section renders inside; sets the section accent |
+| `src/components/SectionOverlay.tsx` | Legacy circle-clip panel, retained for reference; no longer used by the main routes |
 | `src/components/sections/*` | About, Speaking, Work, Podcast, Writing, BookMe |
-| `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Shared section chrome + scroll-reveal wrapper |
+| `src/components/SectionHeader.tsx`, `Reveal.tsx`, `Footer.tsx` | Legacy dark section chrome and scroll-reveal wrapper |
 | `src/content/*.json` | **Structured content** — profile, principles, talks, work history, and podcast episodes |
 | `src/content/posts/*.md`, `*.html` | **Blog posts** — markdown or standalone interactive HTML (see below) |
 | `src/data/content.ts` | Typed loader for the JSON; add fields to the types here |
 | `src/canvas.manifest.js` | Screen registry — powers `?mp_screen=` deep links (see Verifying) |
 | `src/index.css` | Design tokens + the Signal Deck system (below) |
+| `src/components/PaperPage.tsx` | Shared section sheet, page switcher, animated heading and booking footer |
+| `src/components/PaperDisclosure.tsx` | Keyboard-accessible animated role and talk details |
+| `src/components/PortraitExperience.tsx` | Persistent photographic scene; damped pointer depth and portrait transitions with uniform name scaling |
+| `src/components/ReadingTitle.tsx` | Clipped word entrance for section and article headings; reduced-motion fallback |
+| `src/components/sections/ConstellationHero.tsx` | Original hero preserved for comparison via `/?constellation` |
+| `src/portrait.css` | Site palette, portrait composition, paper layouts, reading prose, forms and motion rules |
+| `public/portraits/macs-cutout.png` | Transparent foreground prepared from IMG_6721; provenance and prompt in public/portraits/README.md |
 
 Structured content lives in JSON; edit the corresponding file to change it.
 Section headings, descriptions, navigation labels, and form labels/messages
 currently live in components. Edit those strings in place; extracting them
 into JSON is optional, not a prerequisite for a copy change. Add new structured
 content to JSON and its types to `src/data/content.ts`. Change appearance in
-the component + `index.css`.
+the component + `portrait.css`; legacy scene styles remain in `index.css`.
 
 The blog is a historic archive — Macs's LinkedIn posts plus his original
 2013–2015 .NET/Nancy-era blog — dated to their original publish dates. Drop a
@@ -72,7 +84,7 @@ URL (`/blog/<title>`):
   remove old, `os.replace`) — a case-only rename like `Foo.md`→`foo.md` is the
   *same inode*, so "write new then delete old" deletes the file you just wrote.
 
-**Hero scene notes:**
+**Original constellation scene notes (`/?constellation`):**
 - **Backdrop & glass are configured in `src/data/heroConfig.ts`**, not in the
   components. To add an image: drop a ~1920×1200 JPEG (≲1 MB) in
   `public/backdrops/`, register it in `HERO_IMAGES` with an accurate credit
@@ -118,39 +130,60 @@ the code checks `success === "true"` — don't "simplify" that away. The
 endpoint also rejects requests without a browser `Origin`; test with
 `curl -H "Origin: https://macs.dev"`.
 
-## Design system — "Signal Deck" (dark neumorphism × retrofuturism)
+## Design system — portrait and paper
 
-The whole site lives in **one dark world**. The hero is a dark constellation
-field; the content pages extend it as a **backlit instrument deck** — every
-surface is a soft-extruded "alloy" panel backlit by its section's accent.
-Do **not** reintroduce the old cream/`--paper` palette on content.
+The site uses the photograph’s greys, dark ink, Ledger/Aurelia headings and Inter body text, scoped
+through `--portrait-*` in `src/portrait.css`. Base colours: backdrop `#c6cac5`,
+paper `#f0f1ec`, ink `#252c2c`, muted text `#59625f`, rules `#b5bcb6`, links
+`#364e60`. Use open layouts, readable line lengths and quiet rules, with solid
+ink booking buttons. Headings use the available content width; do not add narrow
+character-width caps to section, article or podcast titles. Keep reading-width
+limits on long body paragraphs instead. Short page introductions and article
+excerpts also use the available content width. Avoid glowing cards, uppercase dashboard labels and section
+accent colours. Each page follows its content: career disclosures, filterable talks,
+linked podcast conversations, an About essay with principles, or a simple form.
+Heading trials are controlled by `--portrait-font` in `src/portrait.css`: use
+`Aurelia` (active) or `Ledger`. Both variable WOFF2 files are local in
+`public/fonts/`, with their original OFL licences. Use regular weight with relaxed
+tracking. Body paragraphs and navigation/form controls stay in Inter, including
+the About introduction. The name’s glyph widths are observed so changing the
+family preserves its uniform-scale masthead transition. CSS font URLs are handled
+by Vite and rewritten for the configured deployment base.
 
-Defined in `src/index.css`:
+Structured content stays in the existing JSON files. Social profile URLs live in
+`profile.json` under `socials` (typed by `Profile` in `src/data/content.ts`).
+`SocialLinks` in `PaperPage.tsx` renders LinkedIn, Twitter/X and a quieter GitHub
+link in every content footer, including articles. Work ends with a LinkedIn CTA;
+other sections retain the speaking CTA, except the booking page itself.
 
-- **Surfaces:** `--ground` (deepest), `--surface` / `--surface-hi` (raised
-  panels), `--surface-sunken`, `--edge` / `--edge-soft` (hairlines).
-- **Text:** `--text`, `--text-soft`, `--text-dim`. Body copy stays
-  high-contrast and flat — reserve extrusion for *containers/controls*, not
-  running text (keeps long reads comfortable).
-- **Per-section accent:** `--ac`. `SectionOverlay` sets it from the section's
-  constellation node colour, so children just use `var(--ac)`. Mapping:
-  About = green (`--signal`), Speaking/Podcast = purple (`--electric`),
-  Work = slate (`--dim`), Book = orange (`--accent`), blog = green.
-- **Neumorphic shadows:** `--nm-raise`, `--nm-raise-lg`, `--nm-inset`,
-  `--nm-flat`, and `--nm-hover` (raised + accent rim-glow; resolves `--ac` at
-  the call site). Apply via Tailwind arbitrary values, e.g.
-  `shadow-[var(--nm-raise)] hover:shadow-[var(--nm-hover)] active:shadow-[var(--nm-inset)]`.
-- **Atmosphere:** `.deck-grid`, `.deck-scan`, `.deck-grain` overlay classes;
-  `.eq-bar` for the podcast equaliser.
-- **Type:** Fraunces (display, `font-display`, light weight, high `opsz`),
-  Inter (body), JetBrains Mono (`font-mono`, uppercase tracked labels).
+`PaperPage.tsx` provides the shared sheet, heading, page switcher and footer for
+Work, Speaking, About, Podcast and Book. Writing uses the same navigation/footer
+with its archive layout; articles keep their reading layout. `PaperDisclosure.tsx`
+uses buttons with `aria-expanded` and animated labelled regions. Work opens its
+first role by default; talk descriptions and original event links expand on demand.
+Podcast uses the same quiet underlined selection controls as the talk filters:
+Guest appearances contains all existing episodes; My podcast shows Coming soon.
+Keep both controls keyboard-accessible and respect reduced motion.
 
-**Rules of thumb when adding a content surface:**
-- Use `--surface` + a `--nm-*` shadow for panels; `--surface-sunken`/`--nm-inset`
-  for pressed-in slots (chips, list items).
-- Make it tactile: lift on hover, press in on `active`, ignite the accent glow.
-- Honour `prefers-reduced-motion` (see the media query in `index.css`).
-- Keep one accent per section — don't mix constellation colours in one view.
+`App.tsx` owns the persistent scene, `LayoutGroup`, route exit/entry coordination,
+and `MotionConfig`. `src/hooks/useReducedMotion.ts` subscribes to live OS
+preference changes for the scene and all controls; enabling it stops pointer
+springs immediately without a reload. The portrait and name stay mounted across
+home, all sections and articles. Pointer transforms are spring-damped, mouse-only,
+and disabled with reduced motion. Hover previews expand beneath their selected
+home menu item and also appear on keyboard focus. Podcast is in the main menu;
+Book me to speak is the primary CTA. The employer/role belongs in the Work preview,
+without a standalone “currently at” line. Name words retain fixed font/optical
+metrics and animate using uniform scale plus position; do not reintroduce
+non-uniform shared-layout scaling on typography.
+
+The original Signal Deck tokens in `src/index.css` remain for the optional
+constellation scene and standalone HTML posts. Their dark surfaces, per-section
+accents and neumorphic shadows are legacy styling, not guidance for new pages.
+Do not remove these tokens without checking the interactive blog iframe styles.
+The FormSubmit transport, honeypot, validation and body-level success check must
+remain intact when changing the booking layout. Test submission states with
+intercepted responses, without sending real enquiries.
 
 ## Development workflow
 
@@ -170,65 +203,43 @@ Do not dismiss other diagnostics as baseline noise.
 
 ### Verifying changes visually (do this for any UI change)
 
-Each section is a deep-linkable route, so land directly on any state by URL,
-then screenshot with a headless browser. (`Home` reads the `:section` param
-and opens that overlay; browser back/forward and refresh all work.)
+Start the dev server on an explicit unused port, e.g.
+`npm run dev -- --port 5219 --strictPort`. Use the server for this checkout.
 
-| Screen | URL |
-| --- | --- |
-| About | `/about` |
-| Speaking | `/speaking` |
-| Work | `/work` |
-| Writing | `/writing` |
-| Podcast | `/podcast` |
-| Book me | `/book` |
-| A blog post | `/blog/atomic-team-design` |
+Every state is deep-linkable: `/about`, `/speaking`, `/work`, `/writing`,
+`/podcast`, `/book` and `/blog/atomic-team-design`. Legacy `?mp_screen=<id>`
+links redirect to their canonical section routes. Trailing section slashes are
+canonicalized; unknown paths return to home. `/?constellation` retains the
+original WebGL homepage for comparison; wait about 4.5s for its lazy assets.
 
-The legacy `?mp_screen=<id>` deep links (`src/canvas.manifest.js`) still work —
-`Home` redirects them to the canonical `/section` path on load.
-
-Reveal animations use framer-motion `whileInView` (IntersectionObserver).
-They run when elements enter view, including in headless browsers. Sections
-scroll inside `SectionOverlay`'s fixed-height `overflow-y-auto` container;
-`--full-page` does not expand that container or reveal its off-screen content.
-Start the dev server on an explicit port (in a separate terminal):
-
-```bash
-npm run dev -- --port 5219 --strictPort
-```
-
-In a Playwright session with a `page` already created, capture successive
-viewports of the overlay, allowing each reveal to finish:
+All content routes scroll inside `.portrait-page`, not the window or a dialog.
+Capture successive viewports of that element and inspect every screenshot:
 
 ```js
 await page.setViewportSize({ width: 1440, height: 1000 });
-await page.goto('http://localhost:5219/podcast');
-await page.waitForTimeout(2200);
-const scroller = page.getByRole('dialog').locator('.overflow-y-auto');
-await scroller.waitFor({ state: 'visible' });
+await page.goto('http://localhost:5219/work');
+await page.waitForTimeout(1600);
+const scroller = page.locator('.portrait-page');
 let frame = 0;
 while (true) {
-  await page.waitForTimeout(1200);
-  await page.screenshot({ path: `/tmp/podcast-${frame++}.png` });
-  const atBottom = await scroller.evaluate((el) =>
-    el.scrollTop + el.clientHeight >= el.scrollHeight - 1
-  );
+  await page.screenshot({ path: `/tmp/work-${frame++}.png` });
+  const atBottom = await scroller.evaluate(el =>
+    el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
   if (atBottom) break;
-  await scroller.evaluate((el) => {
-    el.scrollTop += el.clientHeight * 0.7;
-  });
+  await scroller.evaluate(el => { el.scrollTop += el.clientHeight * 0.7; });
+  await page.waitForTimeout(400);
 }
 ```
 
-Read every PNG. Verify against the hero for cohesion and check each section's
-accent is correct. For blog posts, scroll the reading view's own scroll
-container to trigger reveals before capturing; inspect its overflow rather
-than assuming the document scrolls.
-
-The hero itself is WebGL (renders fine in headless Chromium via SwiftShader)
-but needs `--wait-for-timeout=4500` or so for the lazy chunk + font + first
-frames. To see the light sweep, drive it with a scripted Playwright
-`mouse.move(...)` and a ~2s settle before the screenshot.
+Check home → every section → home, the page switcher, Writing → article → Writing,
+browser back/forward, refreshed deep links and Escape (articles to Writing, other
+sections to home). Check keyboard disclosure controls, every Speaking filter,
+booking validation and mocked success/failure/retry, and unchanged content links.
+Verify 320px, phone, tablet and desktop layouts and reduced motion; mobile crops
+must keep the face, name and navigation legible. Short phones use a scrolling
+menu above the fixed booking CTA, with non-shrinking destination rows. Prefix portrait asset URLs with
+`import.meta.env.BASE_URL`. The legacy 3D nav stars drift constantly, so use
+Playwright `{ force: true }` if testing them.
 
 ## Git & PR conventions
 
