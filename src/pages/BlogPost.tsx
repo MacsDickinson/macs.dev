@@ -9,11 +9,12 @@ import remarkGfm from 'remark-gfm';
 import { ReadingTitle } from '../components/ReadingTitle';
 import { BLOG_POSTS, PROFILE } from '../data/content';
 import type { BlogPost as Post } from '../data/content';
+import portraitFrameStyles from '../portrait.css?inline';
 
 // ---------------------------------------------------------------------------
 // HTML posts render inside an iframe so their scripts run in isolation.
-// Fragments get wrapped in the site's design tokens + fonts so authors can
-// use var(--surface), var(--ac), .font-display etc. and stay on-language;
+// Fragments get the portrait stylesheet (including deployment-safe local fonts)
+// plus legacy Signal Deck tokens for existing posts.
 // full documents (containing an <html> tag) are used verbatim. Either way a
 // resize script is injected so the frame always matches its content height.
 // ---------------------------------------------------------------------------
@@ -65,7 +66,7 @@ function buildHtmlPostDoc(content: string): string {
     content.replace('</body>', `${RESIZE_SCRIPT}</body>`) :
     content + RESIZE_SCRIPT;
   }
-  return `<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />${POST_FRAME_THEME}</head><body>${content}${RESIZE_SCRIPT}</body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />${POST_FRAME_THEME}<style>${portraitFrameStyles}</style></head><body>${content}${RESIZE_SCRIPT}</body></html>`;
 }
 
 function HtmlPostFrame({ post }: {post: Post;}) {
@@ -90,7 +91,7 @@ function HtmlPostFrame({ post }: {post: Post;}) {
       ref={frameRef}
       srcDoc={srcDoc}
       title={post.title}
-      className="w-full border-0 rounded-2xl bg-[var(--surface)] shadow-[var(--nm-raise-lg)]"
+      className="block w-full border-0 bg-transparent"
       style={{ height }} />);
 
 

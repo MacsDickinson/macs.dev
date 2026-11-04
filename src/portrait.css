@@ -266,7 +266,7 @@
 .paper-result-count { font-size: 12px; color: var(--portrait-muted); margin: 20px 0; }
 .paper-talk-title { font-family: var(--portrait-font); font-size: clamp(25px, 2.6vw, 36px); font-weight: 400; line-height: 1.18; letter-spacing: -.03em; margin-top: 12px; transition: transform .35s var(--portrait-ease); }
 .paper-talk-venue { color: var(--portrait-muted); font-weight: 400; font-size: 12px; margin-top: 14px; line-height: 1.6; }
-.paper-episode { display: block; padding: 32px 0; border-top: 1px solid var(--portrait-line); text-decoration: none; color: inherit; }
+.paper-episode { display: block; padding: 32px 0; border-bottom: 1px solid var(--portrait-line); text-decoration: none; color: inherit; }
 .paper-episode-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; font-size: 12px; color: var(--portrait-muted); line-height: 1.6; }
 .paper-episode h2 { font-family: var(--portrait-font); font-size: clamp(27px, 2.7vw, 38px); font-weight: 400; line-height: 1.15; letter-spacing: -.035em; margin-top: 20px; transition: transform .4s var(--portrait-ease); }
 .paper-episode p { max-width: 58ch; margin-top: 18px; font-size: 15px; line-height: 1.75; color: var(--portrait-muted); }

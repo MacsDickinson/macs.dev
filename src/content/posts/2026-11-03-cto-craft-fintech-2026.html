@@ -1,0 +1,275 @@
+<!--
+title: CTO Craft Fintech: the work around the code
+excerpt: Two days in London, and a recurring theme: AI makes code cheaper. The harder work is building the conditions to turn it into something valuable, safely.
+date: 2026-11-03
+tag: Engineering
+readingTime: 8 min read
+draft: false
+-->
+
+<style>
+  .conference-post {
+    max-width: 65ch;
+    color: var(--portrait-ink);
+    font-family: var(--portrait-body);
+    font-size: 17px;
+    line-height: 1.8;
+  }
+  .conference-post * { box-sizing: border-box; }
+  .conference-post p { margin: 0 0 1.1em; }
+  .conference-post .opening {
+    margin-bottom: 28px;
+    font-family: var(--portrait-font);
+    font-weight: 400;
+    font-size: clamp(27px, 4vw, 36px);
+    letter-spacing: -.025em;
+    line-height: 1.3;
+    text-wrap: pretty;
+  }
+  .conference-post section { margin-top: 48px; }
+  .conference-post h2 {
+    margin: 0 0 18px;
+    font-family: var(--portrait-font);
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: -.025em;
+    line-height: 1.2;
+    text-wrap: pretty;
+  }
+  .conference-post figure { margin: 28px 0; }
+  .conference-post figcaption {
+    margin: 0 0 18px;
+    font-size: 13px;
+    color: var(--portrait-muted);
+    line-height: 1.6;
+  }
+  .conference-post .delegation-ladder { list-style: none; padding: 0; margin: 0; counter-reset: rung; }
+  .conference-post .delegation-ladder li {
+    counter-increment: rung;
+    position: relative;
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 16px;
+    padding: 0 0 18px;
+  }
+  .conference-post .delegation-ladder li::before {
+    content: counter(rung);
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--portrait-paper);
+    border: 1px solid var(--portrait-line);
+    color: var(--portrait-muted);
+    font-size: 13px;
+    z-index: 1;
+  }
+  .conference-post .delegation-ladder li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: 0;
+    width: 1px;
+    background: var(--portrait-line);
+  }
+  .conference-post .rung {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 8px 20px;
+    padding: 3px 0 18px;
+    border-bottom: 1px solid var(--portrait-line);
+  }
+  .conference-post .rung strong { font-size: 16px; font-weight: 500; }
+  .conference-post .rung span { font-size: 15px; line-height: 1.65; }
+  .conference-post .delegation-ladder li:last-child { padding-bottom: 0; }
+  .conference-post .delegation-ladder li:last-child::before {
+    background: var(--portrait-ink);
+    border-color: var(--portrait-ink);
+    color: var(--portrait-paper);
+  }
+  .conference-post .term-example,
+  .conference-post .compliance-flow {
+    padding: 24px 0;
+    border-block: 1px solid var(--portrait-line);
+  }
+  .conference-post .term-example .example-question {
+    font-family: var(--portrait-font);
+    font-weight: 400;
+    font-size: clamp(24px, 3vw, 30px);
+    letter-spacing: -.025em;
+    line-height: 1.4;
+    margin: 0 0 18px;
+  }
+  .conference-post .ambiguous {
+    text-decoration: underline dotted var(--portrait-link);
+    text-underline-offset: 6px;
+  }
+  .conference-post details { border-top: 1px solid var(--portrait-line); padding-top: 14px; }
+  .conference-post summary { cursor: pointer; font-size: 15px; padding: 6px 0; color: var(--portrait-link); }
+  .conference-post details[open] summary { margin-bottom: 14px; }
+  .conference-post .term-example dl { margin: 0; font-size: 15px; }
+  .conference-post .term-example dt { font-weight: 500; margin-top: 12px; }
+  .conference-post .term-example dd { margin: 2px 0 0; }
+  .conference-post blockquote {
+    margin: 30px 0;
+    padding: 4px 0 4px 24px;
+    border-left: 1px solid var(--portrait-ink);
+  }
+  .conference-post blockquote p {
+    font-family: var(--portrait-font);
+    font-weight: 400;
+    font-size: clamp(25px, 3vw, 32px);
+    letter-spacing: -.025em;
+    line-height: 1.4;
+    margin: 0 0 12px;
+  }
+  .conference-post blockquote cite { font-style: normal; color: var(--portrait-muted); font-size: 13px; }
+  .conference-post .compliance-flow ol {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 24px;
+  }
+  .conference-post .compliance-flow li { position: relative; font-size: 14px; line-height: 1.65; }
+  .conference-post .compliance-flow li + li::before {
+    content: '→';
+    position: absolute;
+    left: -19px;
+    color: var(--portrait-muted);
+  }
+  .conference-post .compliance-flow strong { display: block; font-weight: 500; font-size: 15px; margin-bottom: 8px; }
+  .conference-post .source {
+    border-top: 1px solid var(--portrait-line);
+    padding-top: 24px;
+    margin: 36px 0 0;
+    color: var(--portrait-muted);
+    font-size: 13px;
+  }
+  .conference-post a { color: var(--portrait-link); text-underline-offset: 4px; }
+  .conference-post a:hover { color: var(--portrait-ink); }
+  .conference-post :is(a, summary):focus-visible { outline: 2px solid var(--portrait-link); outline-offset: 5px; }
+  @media (max-width: 600px) {
+    .conference-post { font-size: 16px; line-height: 1.75; }
+    .conference-post .rung { grid-template-columns: 1fr; gap: 4px; }
+    .conference-post .delegation-ladder li { gap: 12px; }
+    .conference-post .compliance-flow ol { grid-template-columns: 1fr; gap: 28px; }
+    .conference-post .compliance-flow li + li::before { content: '↓'; left: 0; top: -25px; }
+  }
+</style>
+
+<article class="conference-post" aria-label="Conference reflections">
+  <p class="opening">AI has made writing code cheaper. Everything around it still needs work.</p>
+
+  <div class="intro">
+    <p>I spent two days at CTO Craft Con: Fintech in London, hearing about code waiting for review, teams struggling with existing systems, and tool rollouts that barely changed time to market.</p>
+    <p>I've written before about bottlenecks moving, feedback loops, and AI amplifying what's already there. The talks gave me more to work with, particularly on the things we need to change around the tools. They also kept coming back to people: how we learn, exercise judgement and look after each other while the work changes.</p>
+  </div>
+
+  <section aria-labelledby="verification">
+    <h2 id="verification">More code means more to understand</h2>
+    <p>Max Jacobson at Antithesis argued that verification is becoming the bottleneck. Fábio Oliveira of YLD and Gareth Tupper of NewDay shared an example where pull request throughput doubled and time in review doubled too. We can make the build step faster but it just puts more on to the next queue.</p>
+    <p>That's why I keep coming back to the whole feedback loop. I'd follow a change through review and rework before buying more capacity to generate code. Steve Fenton at Octopus Deploy questioned whether code had ever been the constraint.</p>
+    <p>Max's warning about tests applies here too. An agent can write an implementation and tests that share the same misunderstanding. I'd want independently defined scenarios and evidence from running the system. We need to understand what our checks prove before we use them to justify moving faster.</p>
+  </section>
+
+  <section aria-labelledby="architecture">
+    <h2 id="architecture">Build the conditions for delegation</h2>
+    <p>Richard Marr at PensionBee described how the same engineers using the same models can get very different results in a new service and an old, tightly coupled system. Architecture sets a limit on what they can delegate safely.</p>
+
+    <figure>
+      <figcaption>PensionBee's five stages towards safe delegation. Each stage gives the next one something to rely on.</figcaption>
+      <ol class="delegation-ladder">
+        <li><div class="rung"><strong>Discoverable</strong><span>Can an agent find the relevant code, documentation and domain language?</span></div></li>
+        <li><div class="rung"><strong>Bounded</strong><span>Is ownership clear, including who owns the data and its lifecycle?</span></div></li>
+        <li><div class="rung"><strong>Verifiable</strong><span>Can deterministic checks reject a bad change before deployment?</span></div></li>
+        <li><div class="rung"><strong>Containable</strong><span>Can we limit the reach and duration of a mistake, and reverse it?</span></div></li>
+        <li><div class="rung"><strong>Delegable</strong><span>Can those controls provide enough evidence to let qualifying changes proceed?</span></div></li>
+      </ol>
+    </figure>
+
+    <p>This gives me a way to explain the value of paying down structural debt. A clearer boundary and checks we trust can let us delegate changes that previously needed someone to trace dependencies across the system. That is a delivery improvement we can work towards and measure.</p>
+    <p>I'd pick one domain and find the first stage we can't answer confidently. If we can't describe its boundaries, we have work to do before giving an agent more autonomy there. We can improve that domain without waiting for a programme to fix the entire estate.</p>
+  </section>
+
+  <section aria-labelledby="context">
+    <h2 id="context">Write down what the business means</h2>
+    <p>Varalakshmi Venkatraman described Marshmallow's work on self-serve analytics. People needed data literacy and business context as well as access. The team built a context layer and an evaluation framework to check the answers, with shared metric definitions and clear ownership.</p>
+    <p>I think agents are exposing all the corners we've been cutting. We've left terminology ambiguous, decisions undocumented and business rules in people's heads. A human colleague can often get by because they know who to ask, or they've absorbed enough context to spot a misunderstanding. An agent may produce a plausible answer without recognising that there was a question to ask.</p>
+
+    <figure class="term-example">
+      <figcaption>An illustrative analytics question</figcaption>
+      <p class="example-question">“How many <span class="ambiguous">active customers</span> do we have?”</p>
+      <details>
+        <summary>What would an agent have to guess?</summary>
+        <dl>
+          <dt>What counts as active?</dt><dd>Logging in, holding a balance and making a transaction describe different groups.</dd>
+          <dt>Over what period?</dt><dd>A customer active this week may be absent from today's activity.</dd>
+          <dt>Which customers count?</dt><dd>Product scope and account states affect who belongs in the answer.</dd>
+        </dl>
+      </details>
+    </figure>
+
+    <p>The query can run, the number can look reasonable, and everyone can move on with a different understanding of what it means. Faster answers make that easier to miss.</p>
+    <p>I see documenting these definitions as part of making a system usable by agents. When an agent gets a term wrong, I'd check whether we've ever agreed what it means before trying another prompt. Agree the definition with the people who own it, put it somewhere the agent can find, and add examples that let us test its interpretation.</p>
+  </section>
+
+  <section aria-labelledby="organisation">
+    <h2 id="organisation">Help other teams use what works</h2>
+    <p>Jennie Woods described Funding Circle's early tool rollout producing mixed results. Later, they changed how the work was organised: a deliberately senior AI-native squad, a fortnightly guild, and an AI Enablement Lead. Even that senior squad had to resolve disagreements on technical design, missing standards and cross-team dependencies.</p>
+    <p>There are parallels with what we've been doing at LHV. We have squads working in an AI-native way and an AI Champions group sharing what people are learning. I recognised the combination of teams trying things in practice and a community helping that knowledge travel.</p>
+    <p>What Jennie made me think harder about was what happens after the demo. Their Enablement Lead turned discoveries into shared skills, training and coaching, then helped teams adopt them. Sharing an experiment is only part of the work. Someone needs to find out why it worked, which parts transfer, and what another team needs to use it.</p>
+    <p>Jennie reported a 30% reduction in time to market in Q2 2026 against a 2025 baseline. That's their reported result from several changes together; it doesn't isolate the effect of one tool or role. For me, the part to apply is giving someone responsibility for turning shared learning into improvements that other teams can use and check.</p>
+    <p>Lee Provoost and Christy Salter's Cash ISA story at Flagstone reinforced the organisational point. They brought experts from several domains into one squad, with domain owners reviewing changes and taking ownership at launch. If we leave every dependency and handoff as it was, we shouldn't expect faster code to transform delivery.</p>
+  </section>
+
+  <section aria-labelledby="outcomes">
+    <h2 id="outcomes">Decide what good looks like</h2>
+    <p>Steve Martin's Monzo talk pulled several of these threads together for me. Clear business definitions, fast feedback and verification all depend on knowing what we're trying to optimise for.</p>
+    <p>In a suggested-actions example, “improve conversion” sounded clear until the team needed to define exactly what conversion meant. Steve described spending as much time defining what “correct” meant as on the build. That is time I'd want to protect, especially when generating an implementation is getting cheaper.</p>
+    <p>Justin Reock at DX separated AI measurement into utilisation, impact and cost. Lucas Hendrich at Forte Group argued for telemetry connecting what shipped to the intended product outcome. Together, they left me wanting a much clearer answer to what the saved time is buying us. More agent activity doesn't tell us that.</p>
+    <p>Monzo's evaluation sets included factual accuracy, helpfulness and regulatory constraints. Those let the team check whether changes improved the product while preserving the behaviours it needed to get right. They could use the same definitions during development and when assessing the result.</p>
+    <p>I'd want an experiment to start with that agreement. Name the customer behaviour we're hoping to improve, decide what evidence would convince us, and record what must remain true. Then use review time, rework, reliability and support demand to check whether we're improving delivery or moving its costs elsewhere.</p>
+  </section>
+
+  <section aria-labelledby="trust">
+    <h2 id="trust">It's time for compliance to shift left</h2>
+    <p>Swapna Alladi of Allica Bank used a fictional incident in which nobody could establish which model had answered a request, who approved it, what data it could access, or whether the response could be reproduced. Eric Paulsen's Coder breakout covered the environment around that work: identity, allowed tools, secrets, access, audit and observability.</p>
+    <p>My take is that compliance needs to shift left. We've spent years doing this with DevOps, test automation and platform engineering. We agree constraints earlier, automate the repeatable checks and give people feedback while they can still act on it. The same approach should help here.</p>
+
+    <figure class="compliance-flow">
+      <figcaption>What a golden compliance path could look like</figcaption>
+      <ol>
+        <li><strong>Agree the rules</strong>Engineering and compliance define constraints before the work starts.</li>
+        <li><strong>Build the path</strong>Approved access, tools and checks are part of the environment.</li>
+        <li><strong>Collect evidence</strong>Record the context, checks and decisions as the work happens.</li>
+        <li><strong>Review exceptions</strong>Bring human judgement to risk and cases the path doesn't cover.</li>
+      </ol>
+    </figure>
+
+    <p>Golden compliance paths should improve developer experience. Developers can start with an environment that already has the right access and controls, get useful feedback when a change breaks a rule, and produce evidence without reconstructing it at the end.</p>
+    <p>That takes engineering and compliance designing the path together. Some requirements can be checked automatically. Others need judgement, and we should be clear about when and whose. Holly Jukes at Lloyds challenged the idea that an engineer clicking approve guarantees meaningful human involvement; Harry Jell at Yonder described different trade-offs for core banking and the edges of the product.</p>
+    <p>I want those decisions made deliberately, early enough to influence the work. We can automate evidence collection and routine checks while keeping a person accountable for the service, with better information and time to use their judgement.</p>
+  </section>
+
+  <section aria-labelledby="people">
+    <h2 id="people">Lean into the work of managing humans</h2>
+    <p>People were a strong theme throughout the event. Hywel Carver spoke about empathy, trust, attention and respect. Volker Ballueder discussed how leaders navigate pressure without passing it straight on to their teams.</p>
+    <p>As managers, these are parts of the job I think we need to lean into. We can delegate more analysis and drafting, but we still have a relationship with the person receiving the result. We need to notice when they're worried, understand what they aren't saying, and take responsibility for how we respond.</p>
+
+    <blockquote>
+      <p>“Would I be comfortable telling them I used AI?”</p>
+      <cite>Hywel Carver, Skiller Whale</cite>
+    </blockquote>
+
+    <p>Hywel's test is one I'd use before reaching for a tool in a conversation with someone I manage. If I'd be uncomfortable telling them, I need to think about why. Am I helping myself prepare, or avoiding the attention I owe them?</p>
+    <p>People also need time to learn the changing engineering job. Generating an implementation doesn't mean you can explain why it's correct. I'd pair people on difficult decisions and make room for someone to say they don't understand an agent's output, even when it looks impressive and everyone wants to ship it.</p>
+    <p>Volker's point about pressure applies to how we spend the time AI saves. Filling every hour with more commitments leaves less room to learn, recover or think through a decision. The panel suggested using the speed to think more. I'd like some of that time to go into listening properly to the people we're asking to change how they work.</p>
+  </section>
+
+  <p class="source">Reflections from the sessions I attended on 2–3 November 2026. Speaker ideas are paraphrased from my notes except for attributed quotations. <a href="https://conference.ctocraft.com/fintech/agenda/" target="_blank" rel="noopener noreferrer">Conference agenda and speakers</a>.</p>
+</article>
