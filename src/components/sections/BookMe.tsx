@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckIcon } from 'lucide-react';
-import { Reveal } from '../Reveal';
+import { PaperPage } from '../PaperPage';
 import { PROFILE, ASK_ME_ABOUT } from '../../data/content';
 type FormState = {
   name: string;
@@ -18,7 +18,7 @@ const EMPTY: FormState = {
   message: ''
 };
 const inputBase =
-'w-full bg-transparent border-b border-[var(--edge)] py-3 text-[var(--text)] placeholder-[var(--text-dim)] focus:outline-none focus:border-[var(--ac)] transition-colors';
+'paper-input';
 // FormSubmit relays submissions to this inbox as email — no backend needed.
 // Deliberately NOT PROFILE.email: contact@macs.dev is a Squarespace forward
 // and FormSubmit's activation emails didn't survive the hop — register a
@@ -102,220 +102,30 @@ export function BookMe() {
       setStatus('error');
     }
   };
-  return (
-    <section id="book" className="scroll-mt-20">
-      <div className="mx-auto max-w-6xl px-6 md:px-10 py-24 md:py-32">
-        <div className="grid md:grid-cols-12 gap-12 lg:gap-20">
-          <div className="md:col-span-5">
-            <Reveal>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="h-px w-16 bg-gradient-to-r from-[var(--ac)] to-transparent" />
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">
-                  Book me to speak
-                </span>
-              </div>
-              <h2 className="font-display text-4xl md:text-6xl font-light leading-[0.95] tracking-tight text-[var(--text)] [font-variation-settings:'opsz'_144]">
-                I&apos;d love to join <span className="italic text-[var(--ac)]">your lineup</span>.
-              </h2>
-              <p className="mt-6 max-w-md text-[var(--text-soft)] leading-relaxed">
-                Planning a conference, internal summit, or podcast episode?
-                Tell me what you&apos;re planning and I&apos;ll get back to
-                you.
-              </p>
-              <div className="mt-8 space-y-2">
-                <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
-                  Or reach me directly
-                </p>
-                <a
-                  href={`mailto:${PROFILE.email}`}
-                  className="font-mono text-lg text-[var(--text)] border-b border-[var(--edge)] hover:border-[var(--ac)] hover:text-[var(--ac)] transition-colors">
-
-                  {PROFILE.email}
-                </a>
-              </div>
-            </Reveal>
+  return <PaperPage id="book" label="Book me to speak" title="Let’s get a conversation started." description="Planning a conference, internal summit, or podcast episode? Tell me what you’re planning and I’ll get back to you.">
+    <div className="paper-contact-direct">Prefer email? <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a></div>
+    <div className="paper-booking" aria-live="polite">
+      <AnimatePresence mode="wait">
+        {status === 'success' ? <motion.div key="success" className="paper-form-success" initial={{ opacity: 0 }} animate={{ opacity: 1 }} role="status">
+          <CheckIcon size={28} aria-hidden="true" /><h2>Message sent.</h2><p>Thanks for reaching out. I’ll be in touch within a few days to talk details.</p><button className="paper-text-link" onClick={() => setStatus('idle')}>Send another enquiry</button>
+        </motion.div> : <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={onSubmit} noValidate aria-label="Speaking enquiry" aria-busy={status === 'submitting'}>
+          <input type="text" name="_honey" value={honeypot} onChange={e => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+          <div className="paper-form-pair">
+            <Field label="Name" error={errors.name} errorId="name-error"><input name="name" autoComplete="name" required value={form.name} onChange={set('name')} placeholder="Your name" className={inputBase} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-error' : undefined} /></Field>
+            <Field label="Email" error={errors.email} errorId="email-error"><input name="email" type="email" autoComplete="email" required value={form.email} onChange={set('email')} placeholder="you@company.com" className={inputBase} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'email-error' : undefined} /></Field>
           </div>
-
-          <div className="md:col-span-7">
-            <Reveal delay={0.1}>
-              <div className="rounded-2xl bg-[var(--surface)] p-8 md:p-10 shadow-[var(--nm-raise)]">
-              <AnimatePresence mode="wait">
-                {status === 'success' ?
-                <motion.div
-                  key="success"
-                  initial={{
-                    opacity: 0,
-                    y: 20
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0
-                  }}
-                  className="flex flex-col items-start gap-5">
-
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ac)] text-[var(--ground)] shadow-[0_0_24px_-3px_var(--ac)]">
-                      <CheckIcon className="h-6 w-6" />
-                    </span>
-                    <h3 className="font-display text-3xl font-light text-[var(--text)]">
-                      Message sent.
-                    </h3>
-                    <p className="text-[var(--text-soft)] max-w-sm">
-                      Thanks for reaching out. I&apos;ll be in touch within a
-                      few days to talk details.
-                    </p>
-                    <button
-                    onClick={() => setStatus('idle')}
-                    className="font-mono text-xs uppercase tracking-[0.15em] border-b border-[var(--edge)] pb-1 text-[var(--text)] hover:text-[var(--ac)] hover:border-[var(--ac)] transition-colors">
-
-                      Send another
-                    </button>
-                  </motion.div> :
-
-                <motion.form
-                  key="form"
-                  initial={{
-                    opacity: 0
-                  }}
-                  animate={{
-                    opacity: 1
-                  }}
-                  exit={{
-                    opacity: 0
-                  }}
-                  onSubmit={onSubmit}
-                  noValidate
-                  className="space-y-8">
-
-                    <input
-                    type="text"
-                    name="_honey"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
-                    className="hidden" />
-
-                    <div className="grid sm:grid-cols-2 gap-8">
-                      <Field label="Name" error={errors.name}>
-                        <input
-                        type="text"
-                        value={form.name}
-                        onChange={set('name')}
-                        placeholder="Your name"
-                        className={inputBase} />
-                      
-                      </Field>
-                      <Field label="Email" error={errors.email}>
-                        <input
-                        type="email"
-                        value={form.email}
-                        onChange={set('email')}
-                        placeholder="you@company.com"
-                        className={inputBase} />
-                      
-                      </Field>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-8">
-                      <Field label="Organisation">
-                        <input
-                        type="text"
-                        value={form.organisation}
-                        onChange={set('organisation')}
-                        placeholder="Event or company"
-                        className={inputBase} />
-                      
-                      </Field>
-                      <Field label="Topic of interest">
-                        <select
-                        value={form.topic}
-                        onChange={set('topic')}
-                        className={`${inputBase} appearance-none`}>
-                        
-                          {ASK_ME_ABOUT.map((t) =>
-                        <option
-                          key={t}
-                          value={t}
-                          className="bg-[var(--surface)] text-[var(--text)]">
-                          
-                              {t}
-                            </option>
-                        )}
-                          <option
-                          value="Something else"
-                          className="bg-[var(--surface)] text-[var(--text)]">
-                          
-                            Something else
-                          </option>
-                        </select>
-                      </Field>
-                    </div>
-
-                    <Field label="Tell me more" error={errors.message}>
-                      <textarea
-                      value={form.message}
-                      onChange={set('message')}
-                      rows={4}
-                      placeholder="Format, audience, date, and what you'd love me to cover…"
-                      className={`${inputBase} resize-none`} />
-                    
-                    </Field>
-
-                    <button
-                    type="submit"
-                    disabled={status === 'submitting'}
-                    className="inline-flex items-center gap-3 rounded-xl bg-[var(--field)] px-8 py-4 font-mono text-xs uppercase tracking-[0.15em] text-[var(--text)] shadow-[var(--nm-flat)] transition-[transform,box-shadow,color] duration-300 hover:-translate-y-0.5 hover:text-[var(--ac)] hover:shadow-[var(--nm-hover)] active:translate-y-0 active:shadow-[var(--nm-inset)] disabled:opacity-60">
-
-                      {status === 'submitting' ?
-                    'Sending…' :
-                    status === 'error' ?
-                    'Try again' :
-                    'Send enquiry'}
-                    </button>
-
-                    {status === 'error' &&
-                  <p className="text-sm text-[var(--text-soft)]">
-                        Something went wrong sending that. Please try again,
-                        or email me directly at{' '}
-                        <a
-                      href={`mailto:${PROFILE.email}`}
-                      className="text-[var(--ac)] border-b border-[var(--ac)]/40 hover:border-[var(--ac)] transition-colors">
-
-                          {PROFILE.email}
-                        </a>
-                        .
-                      </p>
-                  }
-                  </motion.form>
-                }
-              </AnimatePresence>
-              </div>
-            </Reveal>
+          <div className="paper-form-pair">
+            <Field label="Organisation (optional)"><input name="organisation" autoComplete="organization" value={form.organisation} onChange={set('organisation')} placeholder="Event or company" className={inputBase} /></Field>
+            <Field label="Topic of interest"><select name="topic" value={form.topic} onChange={set('topic')} className={inputBase}>{ASK_ME_ABOUT.map(topic => <option key={topic} value={topic}>{topic}</option>)}<option value="Something else">Something else</option></select></Field>
           </div>
-        </div>
-      </div>
-    </section>);
-
+          <Field label="Tell me more" error={errors.message} errorId="message-error"><textarea name="message" required value={form.message} onChange={set('message')} rows={5} placeholder="Format, audience, date, and what you’d love me to cover…" className={inputBase} aria-invalid={!!errors.message} aria-describedby={errors.message ? 'message-error' : undefined} /></Field>
+          <button type="submit" disabled={status === 'submitting'} className="paper-cta">{status === 'submitting' ? 'Sending…' : status === 'error' ? 'Try again' : 'Send enquiry'}</button>
+          {status === 'error' && <p className="paper-form-error" role="alert">Something went wrong sending that. Please try again, or email me at <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>.</p>}
+        </motion.form>}
+      </AnimatePresence>
+    </div>
+  </PaperPage>;
 }
-function Field({
-  label,
-  error,
-  children
-
-
-
-
-}: {label: string;error?: string;children: React.ReactNode;}) {
-  return (
-    <label className="block">
-      <span className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
-        {label}
-      </span>
-      <div className="mt-1">{children}</div>
-      {error &&
-      <span className="mt-1 block text-xs text-[var(--ac)]">{error}</span>
-      }
-    </label>);
-
+function Field({ label, error, errorId, children }: { label: string; error?: string; errorId?: string; children: React.ReactNode }) {
+  return <label className="paper-field"><span>{label}</span>{children}{error && <span className="paper-field-error" id={errorId}>{error}</span>}</label>;
 }
