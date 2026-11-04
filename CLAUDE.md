@@ -64,10 +64,15 @@ URL (`/blog/<title>`):
 - **`*.md`** — markdown with a `---` frontmatter block, rendered by
   react-markdown into the `.post-prose` styles in `index.css`.
 - **`*.html`** — standalone interactive/immersive posts; frontmatter lives in
-  a leading `<!-- -->` comment. `BlogPost.tsx` renders them in an
-  auto-resizing iframe: *fragments* get wrapped in the Signal Deck tokens +
-  fonts (authors can use `var(--surface)`, `var(--ac)`, `.font-display`…);
-  *full documents* (real `<html>` tag) are used verbatim.
+  a leading `<!-- -->` comment. `BlogPost.tsx` renders them in a transparent,
+  auto-resizing iframe with no outer card or shadow. Fragments receive the
+  shared `portrait.css` stylesheet, including local fonts with deployment-safe
+  URLs, alongside the legacy Signal Deck tokens. New posts use `--portrait-*`,
+  `var(--portrait-font)` and `var(--portrait-body)` to match the paper sheet.
+  Full documents (real `<html>` tag) are used verbatim.
+  Give the post one reading-width container (e.g. `max-width: 65ch`) so prose,
+  figures and interactive examples align; avoid extra outer padding or
+  independent paragraph widths that leave diagrams wider than the text.
 - Files starting with `_` are skipped — `_template.md` / `_template.html`
   are copy-me starting points documenting the frontmatter.
 - Frontmatter: `title`, `excerpt`, `date` (YYYY-MM-DD), `tag`, plus optional
