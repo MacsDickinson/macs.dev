@@ -1,6 +1,7 @@
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import '../portrait.css';
 
 /** Persistent scene: the same portrait and name remain mounted throughout the reading journey. */
@@ -40,7 +41,8 @@ export function PortraitExperience() {
   const typeX = useTransform(x, [-1, 1], [7, -7]);
   const typeY = useTransform(y, [-1, 1], [4, -4]);
   useEffect(() => {
-    if (!enabled || !home || reduced) { pointerX.set(0); pointerY.set(0); return; }
+    if (reduced) { pointerX.set(0); pointerY.set(0); x.jump(0); y.jump(0); return; }
+    if (!enabled || !home) { pointerX.set(0); pointerY.set(0); return; }
     const move = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse') return;
       pointerX.set((event.clientX / window.innerWidth - .5) * 2);
@@ -51,7 +53,7 @@ export function PortraitExperience() {
     document.addEventListener('pointerleave', reset);
     window.addEventListener('blur', reset);
     return () => { window.removeEventListener('pointermove', move); document.removeEventListener('pointerleave', reset); window.removeEventListener('blur', reset); };
-  }, [enabled, home, reduced, pointerX, pointerY]);
+  }, [enabled, home, reduced, pointerX, pointerY, x, y]);
   useEffect(() => {
     if (!enabled || home) return;
     const escape = (event: KeyboardEvent) => {

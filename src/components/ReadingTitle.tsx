@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { motion } from 'framer-motion';
 export function ReadingTitle({ children, className = '' }: { children: string; className?: string }) {
   const reduced = useReducedMotion();
   return <h1 className={`portrait-reading-title ${className}`} aria-label={children}>

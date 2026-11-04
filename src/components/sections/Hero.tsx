@@ -1,5 +1,6 @@
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { BLOG_POSTS, WORK, TALKS, PODCASTS, PROFILE } from '../../data/content';
 

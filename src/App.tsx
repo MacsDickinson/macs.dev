@@ -1,10 +1,12 @@
+import { useReducedMotion } from './hooks/useReducedMotion';
 import { AnimatePresence, MotionConfig, LayoutGroup } from 'framer-motion';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { BlogPost } from './pages/BlogPost';
 import { PortraitExperience } from './components/PortraitExperience';
 export function App() {
-  return <BrowserRouter basename={import.meta.env.BASE_URL}><MotionConfig reducedMotion="user"><LayoutGroup><PageRoutes /></LayoutGroup></MotionConfig></BrowserRouter>;
+  const reduced = useReducedMotion();
+  return <BrowserRouter basename={import.meta.env.BASE_URL}><MotionConfig reducedMotion={reduced ? 'always' : 'never'}><LayoutGroup><PageRoutes /></LayoutGroup></MotionConfig></BrowserRouter>;
 }
 function PageRoutes() {
   const location = useLocation();

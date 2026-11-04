@@ -166,7 +166,9 @@ Guest appearances contains all existing episodes; My podcast shows Coming soon.
 Keep both controls keyboard-accessible and respect reduced motion.
 
 `App.tsx` owns the persistent scene, `LayoutGroup`, route exit/entry coordination,
-and `MotionConfig reducedMotion="user"`. The portrait and name stay mounted across
+and `MotionConfig`. `src/hooks/useReducedMotion.ts` subscribes to live OS
+preference changes for the scene and all controls; enabling it stops pointer
+springs immediately without a reload. The portrait and name stay mounted across
 home, all sections and articles. Pointer transforms are spring-damped, mouse-only,
 and disabled with reduced motion. Hover previews expand beneath their selected
 home menu item and also appear on keyboard focus. Podcast is in the main menu;

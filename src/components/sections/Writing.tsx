@@ -1,5 +1,6 @@
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { BLOG_POSTS } from '../../data/content';
 import { ReadingTitle } from '../ReadingTitle';

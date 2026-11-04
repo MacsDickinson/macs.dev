@@ -1,6 +1,7 @@
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronDown, ArrowUpRight } from 'lucide-react';
 import { ReadingTitle } from './ReadingTitle';
 import { PROFILE } from '../data/content';

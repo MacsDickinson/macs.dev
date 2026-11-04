@@ -1,5 +1,6 @@
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useId, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
 /** A real button and labelled region; only the requested detail moves. */

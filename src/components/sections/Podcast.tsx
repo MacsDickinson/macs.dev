@@ -1,5 +1,6 @@
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { PODCASTS } from '../../data/content';
 import { PaperPage } from '../PaperPage';

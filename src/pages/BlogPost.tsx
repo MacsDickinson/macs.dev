@@ -1,7 +1,8 @@
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { SocialLinks } from '../components/PaperPage';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
