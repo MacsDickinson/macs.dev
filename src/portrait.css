@@ -48,6 +48,10 @@
 .portrait-destinations { position: absolute; top: 20vh; right: 5vw; width: 19vw; max-width: 280px; display: flex; flex-direction: column; }
 .portrait-destinations button { position: relative; min-height: 68px; padding: 16px 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0 12px; text-align: left; border-top: 1px solid var(--portrait-line); }
 .destination-label { font-family: var(--portrait-body); font-weight: 400; font-size: clamp(25px, 2.5vw, 40px); letter-spacing: -.035em; transition: transform .5s var(--portrait-ease); }
+/* Soft paper-grey veil so the menu stays legible where the portrait slides beneath it in narrower windows. */
+.portrait-destinations { isolation: isolate; }
+.portrait-destinations::before { content: ''; position: absolute; z-index: -1; inset: -40px -5vw -40px -96px; pointer-events: none; background: color-mix(in srgb, var(--portrait-bg) 62%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-mask-image: linear-gradient(to right, transparent, #000 96px), linear-gradient(to bottom, transparent, #000 40px, #000 calc(100% - 40px), transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent, #000 96px), linear-gradient(to bottom, transparent, #000 40px, #000 calc(100% - 40px), transparent); mask-composite: intersect; }
+@media (max-width: 600px) { .portrait-destinations::before { display: none; } }
 .portrait-destinations svg { opacity: 0; transform: translate(-8px,8px); transition: opacity .3s, transform .5s var(--portrait-ease); }
 .portrait-destinations button.is-active .destination-label { transform: translateX(8px); }
 .portrait-destinations button.is-active svg { opacity: 1; transform: translate(0,0); }
